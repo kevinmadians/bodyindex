@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import BMILogo from './BMILogo';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,7 +13,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <header className="bg-primary text-white shadow-md">
         <div className="container mx-auto py-4 px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
-            <Link to="/" className="text-2xl font-bold">BodyWise BMI</Link>
+            <Link to="/" className="flex items-center gap-3">
+              <BMILogo />
+              <span className="text-2xl font-bold">BodyWise BMI</span>
+            </Link>
             <nav>
               <ul className="flex space-x-6">
                 <li><Link to="/" className="hover:text-white/80 transition-colors">Home</Link></li>
