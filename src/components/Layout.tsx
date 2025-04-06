@@ -3,6 +3,13 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import BMILogo from './BMILogo';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { 
+  NavigationMenu, 
+  NavigationMenuList, 
+  NavigationMenuItem, 
+  NavigationMenuLink 
+} from '@/components/ui/navigation-menu';
+import { cn } from '@/lib/utils';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,8 +18,16 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const isMobile = useIsMobile();
-  const isHomePage = location.pathname === '/';
-  const isAboutPage = location.pathname === '/about';
+  const currentPath = location.pathname;
+
+  // Navigation items
+  const navItems = [
+    { path: '/', label: 'Home' },
+    { path: '/guide', label: 'BMI Guide' },
+    { path: '/health-tips', label: 'Health Tips' },
+    { path: '/faq', label: 'FAQ' },
+    { path: '/about', label: 'About' },
+  ];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -32,31 +47,40 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <span className="text-xs text-white/80">Your Health Companion</span>
               </div>
             </Link>
-            <nav className="flex items-center">
-              <ul className="flex space-x-4 sm:space-x-6">
-                {!isHomePage && (
-                  <li>
+            
+            <NavigationMenu className="hidden md:flex">
+              <NavigationMenuList>
+                {navItems.map((item) => (
+                  <NavigationMenuItem key={item.path}>
                     <Link 
-                      to="/" 
-                      className="font-bold hover:text-white/80 transition-colors relative group"
+                      to={item.path} 
+                      className={cn(
+                        "px-4 py-2 font-bold hover:text-white/80 transition-colors relative group",
+                        currentPath === item.path ? "text-white after:w-full after:bg-white/70" : "text-white/90"
+                      )}
                     >
-                      <span>Home</span>
+                      <span>{item.label}</span>
                       <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
                     </Link>
-                  </li>
-                )}
-                {!isAboutPage && (
-                  <li>
-                    <Link 
-                      to="/about" 
-                      className="font-bold hover:text-white/80 transition-colors relative group"
-                    >
-                      <span>{isMobile ? "About" : "About BMI"}</span>
-                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
-                    </Link>
-                  </li>
-                )}
-              </ul>
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
+
+            <nav className="md:hidden">
+              <select 
+                className="bg-primary text-white font-bold border border-white/20 rounded-md py-1 px-2 focus:outline-none focus:ring-2 focus:ring-white/40"
+                value={currentPath}
+                onChange={(e) => {
+                  window.location.href = e.target.value;
+                }}
+              >
+                {navItems.map((item) => (
+                  <option key={item.path} value={item.path}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
             </nav>
           </div>
         </div>
