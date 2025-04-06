@@ -8,14 +8,14 @@ interface BMIChartProps {
 }
 
 const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
-  // BMI categories and their ranges
+  // BMI categories and their ranges with improved, more visible colors
   const categories = [
-    { name: "Underweight", range: "< 18.5", color: "bg-bmi-blue-DEFAULT", start: 0, end: 18.5 },
-    { name: "Normal weight", range: "18.5 - 24.9", color: "bg-bmi-green-DEFAULT", start: 18.5, end: 25 },
-    { name: "Overweight", range: "25 - 29.9", color: "bg-bmi-yellow-DEFAULT", start: 25, end: 30 },
-    { name: "Obesity (Class 1)", range: "30 - 34.9", color: "bg-bmi-orange-light", start: 30, end: 35 },
-    { name: "Obesity (Class 2)", range: "35 - 39.9", color: "bg-bmi-orange-DEFAULT", start: 35, end: 40 },
-    { name: "Obesity (Class 3)", range: "≥ 40", color: "bg-bmi-red-DEFAULT", start: 40, end: 50 }
+    { name: "Underweight", range: "< 18.5", color: "bg-blue-500", start: 0, end: 18.5, risks: "Nutritional deficiencies, weakened immune system, osteoporosis" },
+    { name: "Normal weight", range: "18.5 - 24.9", color: "bg-green-500", start: 18.5, end: 25, risks: "Lowest risk for weight-related health issues" },
+    { name: "Overweight", range: "25 - 29.9", color: "bg-yellow-500", start: 25, end: 30, risks: "Heart disease, high blood pressure, type 2 diabetes" },
+    { name: "Obesity (Class 1)", range: "30 - 34.9", color: "bg-orange-400", start: 30, end: 35, risks: "Higher risk of heart disease, stroke, metabolic syndrome" },
+    { name: "Obesity (Class 2)", range: "35 - 39.9", color: "bg-orange-600", start: 35, end: 40, risks: "High risk of developing serious health conditions" },
+    { name: "Obesity (Class 3)", range: "≥ 40", color: "bg-red-600", start: 40, end: 50, risks: "Extremely high risk of life-threatening health conditions" }
   ];
 
   // Calculate position percentage for the BMI indicator
@@ -32,21 +32,21 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
   return (
     <Card className="mb-8 shadow-lg animate-slide-up">
       <CardHeader>
-        <CardTitle className="text-xl">BMI Categories Chart</CardTitle>
+        <CardTitle className="text-xl font-bold text-primary">BMI Categories Chart</CardTitle>
       </CardHeader>
       <CardContent>
         {/* Informational text */}
         <p className="mb-6 text-muted-foreground">
-          The BMI ranges are based on the relationship between body weight and health problems and mortality rates.
+          The BMI ranges are based on the relationship between body weight and health problems. Use this chart to understand where your BMI falls and what it means for your health.
         </p>
         
-        {/* BMI scale visual */}
-        <div className="relative mt-6 mb-12">
-          <div className="flex h-10 rounded-md overflow-hidden">
+        {/* BMI scale visual with improved visibility */}
+        <div className="relative mt-6 mb-16">
+          <div className="flex h-12 rounded-md overflow-hidden">
             {categories.map((category, index) => (
               <div 
                 key={index}
-                className={`${category.color} relative flex-grow text-white text-xs flex items-center justify-center`}
+                className={`${category.color} relative flex-grow text-white text-xs font-medium flex items-center justify-center`}
                 style={{ 
                   flexBasis: `${(category.end - category.start) / 50 * 100}%`,
                   position: 'relative'
@@ -61,51 +61,72 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
           <div className="flex justify-between mt-1">
             {[0, 10, 20, 30, 40, 50].map((value) => (
               <div key={value} className="text-center relative">
-                <div className="absolute h-2 w-0.5 bg-gray-300 -top-2 left-1/2 transform -translate-x-1/2"></div>
-                <span className="text-xs text-muted-foreground">{value}</span>
+                <div className="absolute h-2 w-0.5 bg-gray-400 -top-2 left-1/2 transform -translate-x-1/2"></div>
+                <span className="text-xs font-medium">{value}</span>
               </div>
             ))}
           </div>
           
-          {/* BMI Indicator */}
+          {/* BMI Indicator with improved visibility */}
           {bmi > 0 && (
             <div 
               className="absolute w-0 h-0 transform -translate-x-1/2"
               style={{ 
                 left: `${getIndicatorPosition()}%`, 
-                top: '-10px' 
+                top: '-12px' 
               }}
             >
-              <div className="h-14 w-0.5 bg-black"></div>
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full bg-black text-white px-2 py-1 rounded text-xs whitespace-nowrap">
+              <div className="h-16 w-1 bg-black"></div>
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full bg-primary text-white px-3 py-1.5 rounded text-sm font-bold whitespace-nowrap shadow-md">
                 Your BMI: {bmi}
               </div>
             </div>
           )}
         </div>
         
-        {/* BMI Categories Legend */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+        {/* Enhanced BMI Categories Information */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           {categories.map((category, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <div className={`w-4 h-4 rounded-sm ${category.color}`}></div>
-              <div>
-                <p className="text-sm font-medium">{category.name}</p>
-                <p className="text-xs text-muted-foreground">BMI: {category.range}</p>
+            <div key={index} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-3 mb-2">
+                <div className={`w-5 h-5 rounded-full ${category.color}`}></div>
+                <h3 className="text-base font-bold">{category.name}</h3>
+                <span className="text-sm font-medium text-muted-foreground ml-auto">BMI: {category.range}</span>
               </div>
+              <p className="text-sm text-muted-foreground">{category.risks}</p>
             </div>
           ))}
         </div>
         
         {/* Additional information about BMI */}
-        <div className="mt-8 p-4 border rounded-lg bg-muted/30">
-          <h3 className="font-semibold mb-2">Understanding BMI Limitations</h3>
-          <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
-            <li>BMI doesn't directly measure body fat or muscle mass.</li>
-            <li>Athletes may have a high BMI due to muscle mass, not body fat.</li>
-            <li>BMI may underestimate health risks in certain populations.</li>
-            <li>Other factors like waist circumference and family history are important for comprehensive health assessment.</li>
+        <div className="mt-8 p-5 border rounded-lg bg-muted/30 shadow-sm">
+          <h3 className="font-bold mb-3 text-lg">Understanding BMI Limitations</h3>
+          <ul className="text-sm space-y-3 list-disc pl-5">
+            <li><span className="font-medium">Not a diagnostic tool:</span> BMI doesn't directly measure body fat or muscle mass.</li>
+            <li><span className="font-medium">Athletes:</span> May have a high BMI due to muscle mass, not excess fat.</li>
+            <li><span className="font-medium">Elderly:</span> May have a normal BMI despite having less muscle and more fat.</li>
+            <li><span className="font-medium">Ethnicity:</span> Different ethnic groups may have different body compositions at the same BMI.</li>
+            <li><span className="font-medium">Children and teens:</span> BMI is calculated differently for children and adolescents.</li>
           </ul>
+        </div>
+
+        {/* New: Health Actions Section */}
+        <div className="mt-8 p-5 border-t pt-8">
+          <h3 className="font-bold mb-4 text-lg text-primary">Recommended Health Actions</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
+              <h4 className="font-bold mb-2 text-blue-700">Track Progress</h4>
+              <p className="text-sm">Monitor your BMI regularly alongside other health metrics like waist circumference, body fat percentage, and fitness level.</p>
+            </div>
+            <div className="p-4 bg-green-50 rounded-lg border border-green-100">
+              <h4 className="font-bold mb-2 text-green-700">Consult Professionals</h4>
+              <p className="text-sm">Speak with healthcare providers about your BMI results and develop a personalized health plan.</p>
+            </div>
+            <div className="p-4 bg-purple-50 rounded-lg border border-purple-100">
+              <h4 className="font-bold mb-2 text-purple-700">Lifestyle Changes</h4>
+              <p className="text-sm">Focus on sustainable habits rather than quick fixes. Small, consistent changes yield better long-term results.</p>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -24,23 +24,23 @@ export const getBMICategory = (bmi: number): string => {
 };
 
 export const getBMICategoryColor = (bmi: number): string => {
-  if (bmi <= 0) return "bg-gray-200";
-  if (bmi < 18.5) return "bg-bmi-blue-DEFAULT";
-  if (bmi < 25) return "bg-bmi-green-DEFAULT";
-  if (bmi < 30) return "bg-bmi-yellow-DEFAULT";
-  if (bmi < 35) return "bg-bmi-orange-light";
-  if (bmi < 40) return "bg-bmi-orange-DEFAULT";
-  return "bg-bmi-red-DEFAULT";
+  if (bmi <= 0) return "bg-gray-500";
+  if (bmi < 18.5) return "bg-blue-500";
+  if (bmi < 25) return "bg-green-500";
+  if (bmi < 30) return "bg-yellow-500";
+  if (bmi < 35) return "bg-orange-400";
+  if (bmi < 40) return "bg-orange-600";
+  return "bg-red-600";
 };
 
 export const getHealthRisks = (bmi: number): string => {
   if (bmi <= 0) return "N/A";
-  if (bmi < 18.5) return "Risk of nutritional deficiency and osteoporosis.";
-  if (bmi < 25) return "Low risk for health problems.";
-  if (bmi < 30) return "Moderate risk for heart disease, high blood pressure, and type 2 diabetes.";
-  if (bmi < 35) return "High risk for heart disease, high blood pressure, type 2 diabetes, and other health issues.";
-  if (bmi < 40) return "Very high risk for heart disease, high blood pressure, type 2 diabetes, and other health issues.";
-  return "Extremely high risk for heart disease, high blood pressure, type 2 diabetes, and other serious health issues.";
+  if (bmi < 18.5) return "Increased risk of nutritional deficiencies, osteoporosis, and weakened immune system. Your body may lack essential nutrients needed for optimal function.";
+  if (bmi < 25) return "You're at a healthy weight with lower risk for weight-related health problems. Maintaining this range promotes overall wellbeing and longevity.";
+  if (bmi < 30) return "Increased risk for heart disease, high blood pressure, and type 2 diabetes. Even modest weight loss of 5-10% can significantly improve your health markers.";
+  if (bmi < 35) return "High risk for serious health conditions including heart disease, stroke, type 2 diabetes, and certain cancers. Weight management should be a priority.";
+  if (bmi < 40) return "Very high risk for severe health conditions. Your weight may be impacting your quality of life, and medical intervention may be recommended.";
+  return "Extremely high risk for life-threatening conditions. This BMI range is associated with decreased life expectancy. Medical supervision is strongly advised for weight management.";
 };
 
 export const getRecommendations = (bmi: number): string[] => {
@@ -48,32 +48,35 @@ export const getRecommendations = (bmi: number): string[] => {
   
   if (bmi < 18.5) return [
     "Consult with a healthcare provider about healthy weight gain strategies.",
-    "Consider increasing calorie intake with nutrient-dense foods.",
-    "Include strength training to build muscle mass.",
-    "Monitor nutritional intake to ensure adequate vitamins and minerals."
+    "Increase calorie intake with nutrient-dense foods like nuts, avocados, and whole grains.",
+    "Include strength training 2-3 times weekly to build muscle mass.",
+    "Consider tracking your food intake to ensure adequate nutrition.",
+    "Rule out any underlying medical conditions that might affect weight."
   ];
   
   if (bmi < 25) return [
-    "Maintain current healthy lifestyle habits.",
-    "Regular physical activity (150+ minutes per week).",
-    "Balanced diet rich in fruits, vegetables, lean proteins, and whole grains.",
-    "Regular health check-ups to monitor overall health."
+    "Maintain your current healthy eating and activity patterns.",
+    "Aim for 150+ minutes of moderate exercise per week to maintain cardiovascular health.",
+    "Include strength training 2-3 times weekly to preserve muscle mass.",
+    "Focus on a balanced diet with plenty of fruits, vegetables, lean proteins, and whole grains.",
+    "Continue regular health check-ups to monitor overall health."
   ];
   
   if (bmi >= 25) {
     const recommendations = [
-      "Aim for gradual weight loss of 1-2 pounds per week.",
-      "Increase physical activity (150+ minutes per week).",
-      "Follow a balanced, portion-controlled diet.",
-      "Consider consulting with healthcare professionals for personalized advice."
+      "Aim for gradual weight loss of 0.5-1 kg (1-2 lbs) per week through a modest calorie deficit.",
+      "Increase physical activity to 150-300 minutes per week, combining cardio and strength training.",
+      "Focus on portion control and mindful eating rather than restrictive diets.",
+      "Prioritize whole foods and reduce ultra-processed food consumption.",
+      "Track your progress with measurements beyond just weight, such as waist circumference and energy levels."
     ];
     
     if (bmi >= 30) {
-      recommendations.push("Medical supervision is recommended for your weight management plan.");
+      recommendations.push("Consider working with a healthcare provider to develop a comprehensive weight management plan.");
     }
     
     if (bmi >= 35) {
-      recommendations.push("Discuss potential medical interventions with your healthcare provider.");
+      recommendations.push("Discuss potential medical interventions with your healthcare provider, including counseling, medication, or surgical options if appropriate.");
     }
     
     return recommendations;
@@ -102,5 +105,42 @@ export const getIdealWeightRange = (height: number, unit: 'metric' | 'imperial')
       min: parseFloat(minWeight.toFixed(1)), 
       max: parseFloat(maxWeight.toFixed(1)) 
     };
+  }
+};
+
+// New helper functions for additional insights
+
+export const getActivityCaloriesBurned = (weight: number, unit: 'metric' | 'imperial'): Record<string, number> => {
+  // Convert weight to kg if in imperial
+  const weightInKg = unit === 'imperial' ? weight / 2.20462 : weight;
+  
+  // MET values (Metabolic Equivalent of Task) for different activities
+  // Calories burned = MET × weight (kg) × duration (hours)
+  // These are rough estimates for 30 minutes of activity
+  return {
+    walking: Math.round(3.5 * weightInKg * 0.5),
+    jogging: Math.round(7.0 * weightInKg * 0.5),
+    cycling: Math.round(6.0 * weightInKg * 0.5),
+    swimming: Math.round(5.8 * weightInKg * 0.5),
+    weightLifting: Math.round(3.5 * weightInKg * 0.5),
+    yoga: Math.round(2.5 * weightInKg * 0.5)
+  };
+};
+
+export const getBaseMetabolicRate = (weight: number, height: number, age: number = 30, gender: 'male' | 'female' = 'male', unit: 'metric' | 'imperial'): number => {
+  // Convert imperial to metric if needed
+  let weightInKg = weight;
+  let heightInCm = height;
+  
+  if (unit === 'imperial') {
+    weightInKg = weight / 2.20462;
+    heightInCm = height * 2.54;
+  }
+  
+  // Mifflin-St Jeor equation
+  if (gender === 'male') {
+    return Math.round((10 * weightInKg) + (6.25 * heightInCm) - (5 * age) + 5);
+  } else {
+    return Math.round((10 * weightInKg) + (6.25 * heightInCm) - (5 * age) - 161);
   }
 };
