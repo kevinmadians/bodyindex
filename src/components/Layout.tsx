@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import BMILogo from './BMILogo';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,12 +10,13 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
+  const isMobile = useIsMobile();
   const isHomePage = location.pathname === '/';
   const isAboutPage = location.pathname === '/about';
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-gradient-to-r from-primary to-primary/80 text-white shadow-lg sticky top-0 z-50">
+      <header className="bg-gradient-to-r from-primary/90 via-primary to-primary/90 text-white shadow-lg sticky top-0 z-50">
         <div className="container mx-auto py-4 px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             <Link to="/" className="flex items-center gap-3 group transition-transform hover:scale-105">
@@ -24,14 +26,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <BMILogo />
               </div>
               <div className="flex flex-col">
-                <span className="text-2xl font-bold text-white group-hover:text-white/90 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-white/0 after:group-hover:bg-white/70 after:transition-all">
+                <span className="text-xl sm:text-2xl font-bold text-white group-hover:text-white/90 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-white/0 after:group-hover:bg-white/70 after:transition-all">
                   BodyWise BMI
                 </span>
                 <span className="text-xs text-white/80">Your Health Companion</span>
               </div>
             </Link>
             <nav className="flex items-center">
-              <ul className="flex space-x-6">
+              <ul className="flex space-x-4 sm:space-x-6">
                 {!isHomePage && (
                   <li>
                     <Link 
@@ -58,7 +60,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <line x1="12" y1="16" x2="12" y2="12"></line>
                         <line x1="12" y1="8" x2="12.01" y2="8"></line>
                       </svg>
-                      <span>About BMI</span>
+                      <span>{isMobile ? "About" : "About BMI"}</span>
                       <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
                     </Link>
                   </li>

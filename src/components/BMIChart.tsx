@@ -50,21 +50,26 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
         </p>
         
         <div className="space-y-8">
-          {/* Horizontal BMI scale with improved visibility */}
-          <div className="relative pt-6 pb-12">
+          {/* Horizontal BMI scale with improved visibility - Fixed for mobile */}
+          <div className="relative pt-6 pb-16">
             {/* BMI Scale bar */}
             <div className="flex h-10 rounded-md overflow-hidden shadow-inner">
-              {categories.map((category, index) => (
-                <div 
-                  key={index}
-                  className={`${category.color} relative flex-grow text-white text-xs font-medium flex items-center justify-center transition-transform hover:transform hover:scale-y-110`}
-                  style={{ 
-                    flexBasis: `${(category.end - category.start) / 50 * 100}%`,
-                  }}
-                >
-                  <span className="px-1 truncate">{category.name}</span>
-                </div>
-              ))}
+              {categories.map((category, index) => {
+                // Calculate width based on category range
+                const width = `${(category.end - category.start) / 50 * 100}%`;
+                return (
+                  <div 
+                    key={index}
+                    className={`${category.color} relative text-white text-xs font-medium flex items-center justify-center`}
+                    style={{ 
+                      flexBasis: width,
+                      minWidth: '4px' // Ensure minimum visibility on small screens
+                    }}
+                  >
+                    <span className="px-1 truncate hidden sm:inline-block">{category.name}</span>
+                  </div>
+                )
+              })}
             </div>
             
             {/* Scale markers */}
@@ -77,15 +82,16 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
               ))}
             </div>
             
-            {/* BMI Indicator with improved visibility - fixed positioning and no animations */}
+            {/* BMI Indicator - Fixed for cross-device consistency */}
             {bmi > 0 && (
               <div 
-                className="absolute transition-all duration-500"
+                className="absolute"
                 style={{ 
                   left: `${getIndicatorPosition()}%`, 
                   bottom: '0',
                   transform: 'translateX(-50%)',
-                  zIndex: 20
+                  zIndex: 20,
+                  willChange: 'left' // Optimize rendering
                 }}
               >
                 <div className="flex flex-col items-center">
@@ -93,7 +99,7 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
                   <div className="w-8 h-8 rounded-full bg-primary border-4 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold">
                     {Math.round(bmi)}
                   </div>
-                  <div className="mt-2 bg-primary text-white px-3 py-1.5 rounded-md text-sm font-bold whitespace-nowrap shadow-md max-w-[200px] text-center">
+                  <div className="mt-2 bg-primary text-white px-3 py-1.5 rounded-md text-sm font-bold whitespace-nowrap shadow-md text-center">
                     {bmi.toFixed(1)}
                     {currentCategory && (
                       <span className="block text-xs">{currentCategory.name}</span>
@@ -102,6 +108,16 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
                 </div>
               </div>
             )}
+          </div>
+          
+          {/* Mobile-friendly category labels */}
+          <div className="sm:hidden grid grid-cols-3 gap-1 mb-4">
+            {categories.map((category, index) => (
+              <div key={index} className="flex items-center gap-1">
+                <div className={`w-3 h-3 rounded-full ${category.color} flex-shrink-0`}></div>
+                <span className="text-xs truncate">{category.name}</span>
+              </div>
+            ))}
           </div>
           
           {/* BMI Categories Information */}
@@ -113,10 +129,10 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
             {categories.map((category, index) => (
               <div 
                 key={index} 
-                className={`p-4 border rounded-lg transition-all duration-300 hover:shadow-md ${
+                className={`p-4 border rounded-lg transition-all ${
                   currentCategory?.name === category.name 
-                    ? "ring-2 ring-primary scale-105" 
-                    : "hover:scale-102"
+                    ? "ring-2 ring-primary" 
+                    : ""
                 }`}
               >
                 <div className="flex items-center gap-3 mb-2">
@@ -139,19 +155,19 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
             Understanding BMI Limitations
           </h3>
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-5">
-            <li className="transform hover:translate-x-1 transition-transform">
+            <li>
               <span className="font-medium text-primary">Not a diagnostic tool:</span> BMI doesn't directly measure body fat or muscle mass.
             </li>
-            <li className="transform hover:translate-x-1 transition-transform">
+            <li>
               <span className="font-medium text-primary">Athletes:</span> May have a high BMI due to muscle mass, not excess fat.
             </li>
-            <li className="transform hover:translate-x-1 transition-transform">
+            <li>
               <span className="font-medium text-primary">Elderly:</span> May have a normal BMI despite having less muscle and more fat.
             </li>
-            <li className="transform hover:translate-x-1 transition-transform">
+            <li>
               <span className="font-medium text-primary">Ethnicity:</span> Different ethnic groups may have different body compositions at the same BMI.
             </li>
-            <li className="transform hover:translate-x-1 transition-transform">
+            <li>
               <span className="font-medium text-primary">Children and teens:</span> BMI is calculated differently for children and adolescents.
             </li>
           </ul>
@@ -164,15 +180,15 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
             Recommended Health Actions
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-100 hover:scale-105 transition-transform shadow-sm hover:shadow-md">
+            <div className="p-4 bg-blue-50 rounded-lg border border-blue-100 hover:shadow-md">
               <h4 className="font-bold mb-2 text-blue-700">Track Progress</h4>
               <p className="text-sm">Monitor your BMI regularly alongside other health metrics like waist circumference, body fat percentage, and fitness level.</p>
             </div>
-            <div className="p-4 bg-green-50 rounded-lg border border-green-100 hover:scale-105 transition-transform shadow-sm hover:shadow-md">
+            <div className="p-4 bg-green-50 rounded-lg border border-green-100 hover:shadow-md">
               <h4 className="font-bold mb-2 text-green-700">Consult Professionals</h4>
               <p className="text-sm">Speak with healthcare providers about your BMI results and develop a personalized health plan.</p>
             </div>
-            <div className="p-4 bg-purple-50 rounded-lg border border-purple-100 hover:scale-105 transition-transform shadow-sm hover:shadow-md">
+            <div className="p-4 bg-purple-50 rounded-lg border border-purple-100 hover:shadow-md">
               <h4 className="font-bold mb-2 text-purple-700">Lifestyle Changes</h4>
               <p className="text-sm">Focus on sustainable habits rather than quick fixes. Small, consistent changes yield better long-term results.</p>
             </div>
@@ -195,7 +211,7 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
                   
                   {/* Body */}
                   <path d="M30,50 C30,50 20,120 30,160 C35,180 45,180 50,180 C55,180 65,180 70,160 C80,120 70,50 70,50 Z" 
-                    className={`${bmi > 30 ? 'fill-orange-400' : bmi > 25 ? 'fill-yellow-400' : bmi > 18.5 ? 'fill-green-400' : 'fill-blue-400'} transition-all duration-700`} />
+                    className={`${bmi > 30 ? 'fill-orange-400' : bmi > 25 ? 'fill-yellow-400' : bmi > 18.5 ? 'fill-green-400' : 'fill-blue-400'}`} />
                   
                   {/* Arms */}
                   <path d="M30,60 C20,80 10,100 15,130" className={`stroke-primary/60 fill-none stroke-[4] ${bmi > 30 ? 'stroke-orange-400' : bmi > 25 ? 'stroke-yellow-400' : 'stroke-primary/60'}`} />
@@ -207,7 +223,7 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
                   
                   {/* Body size changes based on BMI */}
                   <circle cx="50" cy="110" r={Math.max(15, Math.min(30, bmi/2))} 
-                    className={`${bmi > 30 ? 'fill-orange-300/80' : bmi > 25 ? 'fill-yellow-300/80' : bmi > 18.5 ? 'fill-green-300/80' : 'fill-blue-300/80'} transition-all duration-700`} />
+                    className={`${bmi > 30 ? 'fill-orange-300/80' : bmi > 25 ? 'fill-yellow-300/80' : bmi > 18.5 ? 'fill-green-300/80' : 'fill-blue-300/80'}`} />
                 </svg>
               </div>
               
