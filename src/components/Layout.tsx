@@ -29,6 +29,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { path: '/about', label: 'About' },
   ];
 
+  // Filter out the current page from navigation items for desktop view
+  const filteredNavItems = navItems.filter(item => item.path !== currentPath);
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-gradient-to-r from-primary/90 via-primary to-primary/90 text-white shadow-lg sticky top-0 z-50">
@@ -42,7 +45,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </div>
               <div className="flex flex-col">
                 <span className="text-xl sm:text-2xl font-bold text-white group-hover:text-white/90 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-white/0 after:group-hover:bg-white/70 after:transition-all">
-                  BodyWise BMI
+                  Body Index
                 </span>
                 <span className="text-xs text-white/80">Your Health Companion</span>
               </div>
@@ -50,13 +53,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             
             <NavigationMenu className="hidden md:flex">
               <NavigationMenuList>
-                {navItems.map((item) => (
+                {filteredNavItems.map((item) => (
                   <NavigationMenuItem key={item.path}>
                     <Link 
                       to={item.path} 
                       className={cn(
                         "px-4 py-2 font-bold hover:text-white/80 transition-colors relative group",
-                        currentPath === item.path ? "text-white after:w-full after:bg-white/70" : "text-white/90"
+                        "text-white/90"
                       )}
                     >
                       <span>{item.label}</span>
@@ -93,7 +96,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <footer className="bg-muted py-6">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center text-muted-foreground">
-            <p className="animate-fade-in">&copy; {new Date().getFullYear()} BodyWise BMI Calculator. All rights reserved.</p>
+            <p className="animate-fade-in">&copy; {new Date().getFullYear()} Body Index Calculator. All rights reserved.</p>
             <p className="text-sm mt-2 animate-fade-in" style={{ animationDelay: "0.2s" }}>
               Disclaimer: This tool is for informational purposes only and is not a substitute for professional medical advice.
             </p>
