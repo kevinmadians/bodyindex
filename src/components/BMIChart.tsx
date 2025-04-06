@@ -35,23 +35,23 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
   const currentCategory = getCurrentCategory();
 
   return (
-    <Card className="mb-8 shadow-lg animate-slide-up hover:shadow-xl transition-shadow duration-300">
+    <Card className="mb-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
       <CardHeader className="border-b bg-muted/30">
         <CardTitle className="text-xl font-bold text-primary flex items-center">
-          <span className="animate-pulse mr-2">📊</span> 
+          <span className="mr-2">📊</span> 
           BMI Categories Chart
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
         {/* Informational text */}
-        <p className="mb-6 text-muted-foreground animate-fade-in">
+        <p className="mb-6 text-muted-foreground">
           The BMI ranges are based on the relationship between body weight and health problems. 
           Use this chart to understand where your BMI falls and what it means for your health.
         </p>
         
         <div className="space-y-8">
           {/* Horizontal BMI scale with improved visibility */}
-          <div className="relative pt-6 pb-12 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+          <div className="relative pt-6 pb-12">
             {/* BMI Scale bar */}
             <div className="flex h-10 rounded-md overflow-hidden shadow-inner">
               {categories.map((category, index) => (
@@ -77,10 +77,10 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
               ))}
             </div>
             
-            {/* BMI Indicator with improved visibility */}
+            {/* BMI Indicator with improved visibility - fixed positioning and no animations */}
             {bmi > 0 && (
               <div 
-                className="absolute transition-all duration-500 animate-bounce-slow"
+                className="absolute transition-all duration-500"
                 style={{ 
                   left: `${getIndicatorPosition()}%`, 
                   bottom: '0',
@@ -90,10 +90,10 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
               >
                 <div className="flex flex-col items-center">
                   <div className="w-0.5 h-16 bg-black"></div>
-                  <div className="w-8 h-8 rounded-full bg-primary border-4 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold animate-pulse">
+                  <div className="w-8 h-8 rounded-full bg-primary border-4 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold">
                     {Math.round(bmi)}
                   </div>
-                  <div className="mt-2 bg-primary text-white px-3 py-1.5 rounded-md text-sm font-bold whitespace-nowrap shadow-md animate-fade-in max-w-[200px] text-center">
+                  <div className="mt-2 bg-primary text-white px-3 py-1.5 rounded-md text-sm font-bold whitespace-nowrap shadow-md max-w-[200px] text-center">
                     {bmi.toFixed(1)}
                     {currentCategory && (
                       <span className="block text-xs">{currentCategory.name}</span>
@@ -105,9 +105,9 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
           </div>
           
           {/* BMI Categories Information */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <h3 className="text-lg font-bold mb-2 col-span-full flex items-center">
-              <span className="animate-pulse mr-2">🔍</span>
+              <span className="mr-2">🔍</span>
               Health Risk by Category
             </h3>
             {categories.map((category, index) => (
@@ -120,7 +120,7 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
                 }`}
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <div className={`w-5 h-5 rounded-full ${category.color} animate-pulse`}></div>
+                  <div className={`w-5 h-5 rounded-full ${category.color}`}></div>
                   <h3 className="text-base font-bold">{category.name}</h3>
                 </div>
                 <div className="flex justify-between items-center mb-2">
@@ -133,9 +133,9 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
         </div>
         
         {/* Additional information about BMI */}
-        <div className="mt-8 p-5 border rounded-lg bg-muted/30 shadow-sm animate-slide-up" style={{ animationDelay: "400ms" }}>
+        <div className="mt-8 p-5 border rounded-lg bg-muted/30 shadow-sm">
           <h3 className="font-bold mb-3 text-lg flex items-center">
-            <span className="animate-pulse mr-2">⚠️</span>
+            <span className="mr-2">⚠️</span>
             Understanding BMI Limitations
           </h3>
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-5">
@@ -158,9 +158,9 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
         </div>
 
         {/* Health Actions Section */}
-        <div className="mt-8 p-5 border-t pt-8 animate-slide-up" style={{ animationDelay: "500ms" }}>
+        <div className="mt-8 p-5 border-t pt-8">
           <h3 className="font-bold mb-4 text-lg text-primary flex items-center">
-            <span className="animate-pulse mr-2">🚀</span>
+            <span className="mr-2">🚀</span>
             Recommended Health Actions
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -179,10 +179,10 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
           </div>
         </div>
         
-        {/* Body Visualization Section - NEW */}
-        <div className="mt-8 p-5 border rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 animate-slide-up" style={{ animationDelay: "600ms" }}>
+        {/* Body Visualization Section */}
+        <div className="mt-8 p-5 border rounded-lg bg-gradient-to-r from-primary/10 to-primary/5">
           <h3 className="font-bold mb-4 text-lg flex items-center">
-            <span className="animate-pulse mr-2">👤</span>
+            <span className="mr-2">👤</span>
             Body Composition Insights
           </h3>
           <div className="flex flex-col md:flex-row gap-6 items-center">
@@ -207,12 +207,12 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
                   
                   {/* Body size changes based on BMI */}
                   <circle cx="50" cy="110" r={Math.max(15, Math.min(30, bmi/2))} 
-                    className={`${bmi > 30 ? 'fill-orange-300/80' : bmi > 25 ? 'fill-yellow-300/80' : bmi > 18.5 ? 'fill-green-300/80' : 'fill-blue-300/80'} animate-pulse transition-all duration-700`} />
+                    className={`${bmi > 30 ? 'fill-orange-300/80' : bmi > 25 ? 'fill-yellow-300/80' : bmi > 18.5 ? 'fill-green-300/80' : 'fill-blue-300/80'} transition-all duration-700`} />
                 </svg>
               </div>
               
               {/* BMI indicator */}
-              <div className="absolute top-1/3 -right-8 bg-primary text-white text-xs font-bold px-2 py-1 rounded-md shadow-md animate-bounce-slow">
+              <div className="absolute top-1/3 -right-8 bg-primary text-white text-xs font-bold px-2 py-1 rounded-md shadow-md">
                 BMI: {bmi.toFixed(1)}
               </div>
             </div>
