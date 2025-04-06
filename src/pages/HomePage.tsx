@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -151,8 +150,8 @@ const HomePage = () => {
             <div className="flex-1 relative">
               <div className="relative w-full h-64 md:h-80 overflow-hidden rounded-lg shadow-md animate-float">
                 <img 
-                  src="/lovable-uploads/a5833b2f-e37d-4c87-a050-2c8db2fa4762.png" 
-                  alt="Health tracking illustration" 
+                  src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" 
+                  alt="Person using health tracking application" 
                   className="w-full h-full object-cover"
                 />
               </div>
