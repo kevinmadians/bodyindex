@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import BMILogo from './BMILogo';
 
 interface LayoutProps {
@@ -8,19 +8,43 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+  const isAboutPage = location.pathname === '/about';
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-primary text-white shadow-md">
         <div className="container mx-auto py-4 px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
-            <Link to="/" className="flex items-center gap-3">
-              <BMILogo />
-              <span className="text-2xl font-bold">BodyWise BMI</span>
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="animate-float transition-transform">
+                <BMILogo />
+              </div>
+              <span className="text-2xl font-bold hover:text-white/90 transition-colors">BodyWise BMI</span>
             </Link>
-            <nav>
+            <nav className="flex items-center">
               <ul className="flex space-x-6">
-                <li><Link to="/" className="hover:text-white/80 transition-colors">Home</Link></li>
-                <li><Link to="/about" className="hover:text-white/80 transition-colors">About BMI</Link></li>
+                {!isHomePage && (
+                  <li>
+                    <Link 
+                      to="/" 
+                      className="hover:text-white/80 transition-colors relative after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-white after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left"
+                    >
+                      Home
+                    </Link>
+                  </li>
+                )}
+                {!isAboutPage && (
+                  <li>
+                    <Link 
+                      to="/about" 
+                      className="hover:text-white/80 transition-colors relative after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-white after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left"
+                    >
+                      About BMI
+                    </Link>
+                  </li>
+                )}
               </ul>
             </nav>
           </div>

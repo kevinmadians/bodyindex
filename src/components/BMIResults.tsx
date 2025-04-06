@@ -110,10 +110,10 @@ const BMIResults: React.FC<BMIResultsProps> = ({
   return (
     <Card className="mb-8 border shadow-lg animate-scale-in">
       <CardContent className="p-6">
-        {/* Updated: More Compact Layout with Centered BMI Display and Badge below BMI */}
-        <div className="mb-6 text-center">
+        {/* More Compact Layout with Centered BMI Display */}
+        <div className="text-center max-w-lg mx-auto mb-6">
           <h3 className="text-xl font-semibold mb-2 animate-fade-in">Your BMI</h3>
-          <div className="flex flex-col items-center justify-center mb-3">
+          <div className="flex flex-col items-center justify-center">
             <span className="text-6xl font-bold text-primary animate-pulse">
               {bmi}
             </span>
@@ -122,18 +122,18 @@ const BMIResults: React.FC<BMIResultsProps> = ({
             </Badge>
           </div>
           
-          <p className="mb-2 text-sm inline-block bg-primary/10 px-3 py-1 rounded-full animate-fade-in">
+          <p className="mt-4 mb-2 text-sm inline-block bg-primary/10 px-3 py-1 rounded-full animate-fade-in">
             A healthy BMI range is <span className="font-semibold text-green-600">18.5 to 24.9</span>
           </p>
           
-          <div className="mt-3 inline-block hover:scale-105 transition-transform">
+          <div className="mt-2 inline-block hover:scale-105 transition-transform">
             <p className="text-sm font-medium">
               Ideal Weight Range: <span className="font-bold">{idealWeightRange.min} - {idealWeightRange.max} {unit === 'metric' ? 'kg' : 'lbs'}</span>
             </p>
           </div>
         </div>
                 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {/* Health Risks and Formula */}
           <div className="animate-slide-up" style={{ animationDelay: "0.1s" }}>
             <Alert className="mb-4 hover:shadow-md transition-shadow">
@@ -192,7 +192,7 @@ const BMIResults: React.FC<BMIResultsProps> = ({
         </div>
         
         {/* Note section */}
-        <div className="mt-4 p-3 bg-muted rounded-lg text-xs text-center animate-fade-in" style={{ animationDelay: "0.3s" }}>
+        <div className="mt-4 p-3 bg-muted rounded-lg text-xs text-center animate-fade-in max-w-4xl mx-auto" style={{ animationDelay: "0.3s" }}>
           <p className="text-muted-foreground">
             BMI is a screening tool but does not diagnose body fatness or health. Consult with a healthcare provider for a complete health assessment.
           </p>
