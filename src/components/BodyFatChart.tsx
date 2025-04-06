@@ -77,18 +77,19 @@ const BodyFatChart: React.FC<BodyFatChartProps> = ({ bodyFatPercentage, gender }
         <Tooltip content={<CustomTooltip />} />
         <Bar 
           dataKey="range" 
+          barSize={20}
           fill="var(--primary)"
           background={{ fill: '#eee' }}
-          radius={[0, 4, 4, 0]}
         >
           {chartData.map((entry, index) => (
             <rect 
               key={`cell-${index}`}
-              fill={entry.isCurrent ? 'var(--primary)' : entry.color}
-              opacity={entry.isCurrent ? 1 : 0.7}
               x={entry.min}
               width={entry.range}
+              y={index * 40 + 10}
               height={20}
+              fill={entry.isCurrent ? 'var(--primary)' : entry.color}
+              opacity={entry.isCurrent ? 1 : 0.7}
             />
           ))}
         </Bar>

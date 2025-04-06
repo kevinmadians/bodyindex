@@ -36,6 +36,7 @@ const BodyFatCalculatorComponent = () => {
   const [bodyFatPercentage, setBodyFatPercentage] = useState<number | null>(null);
   const [fatMass, setFatMass] = useState<number | null>(null);
   const [leanMass, setLeanMass] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState('calculator');
 
   // Convert imperial to metric for calculation
   const convertToMetric = (value: number, type: 'height' | 'weight' | 'circumference') => {
@@ -74,6 +75,9 @@ const BodyFatCalculatorComponent = () => {
     setFatMass(Math.round(fatMassValue * 10) / 10);
     setLeanMass(Math.round(leanMassValue * 10) / 10);
 
+    // Switch to the results tab
+    setActiveTab('results');
+
     toast({
       title: "Body Fat Calculated",
       description: `Your estimated body fat percentage is ${roundedBodyFat}%`,
@@ -102,7 +106,7 @@ const BodyFatCalculatorComponent = () => {
   return (
     <Card className="mb-10 shadow-md">
       <CardContent className="p-6">
-        <Tabs defaultValue="calculator" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="calculator">Calculator</TabsTrigger>
             <TabsTrigger value="results" disabled={bodyFatPercentage === null}>Results</TabsTrigger>
