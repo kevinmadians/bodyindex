@@ -11,6 +11,7 @@ import Guide from "./pages/Guide";
 import HealthTips from "./pages/HealthTips";
 import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
+import BodyFatCalculator from "./pages/BodyFatCalculator";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/bmi-calculator" element={<Index />} />
+          <Route path="/body-fat-calculator" element={<BodyFatCalculator />} />
           <Route path="/about" element={<About />} />
           <Route path="/guide" element={<Guide />} />
           <Route path="/health-tips" element={<HealthTips />} />

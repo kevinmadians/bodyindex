@@ -1,4 +1,3 @@
-
 import { Calculator, Scale, Activity, Heart, HeartPulse, Droplet, Brain, Activity as ActivityIcon, Moon } from 'lucide-react';
 import React from 'react';
 
@@ -31,7 +30,7 @@ const createToolsData = () => {
       detailedDescription: 'Estimate your body fat percentage using various recognized methods.',
       icon: React.createElement(Scale, { className: "h-10 w-10 text-primary" }),
       link: '/body-fat-calculator',
-      available: false,
+      available: true,
     },
     {
       id: 'bmr',
