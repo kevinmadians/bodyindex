@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Calculator, Scale, Activity, Heart } from 'lucide-react';
+import { ArrowRight, Calculator, Scale, Activity, Heart, HeartPulse, Droplet, Brain, BloodTest, Moon } from 'lucide-react';
 
 const HomePage = () => {
   // Available tools
@@ -38,6 +38,54 @@ const HomePage = () => {
       description: 'Find your ideal weight range based on height, age, and body frame.',
       icon: <Heart className="h-10 w-10 text-primary" />,
       link: '/ideal-weight-calculator',
+      available: false,
+    },
+    {
+      id: 'heart-rate',
+      title: 'Heart Rate Zone Calculator',
+      description: 'Calculate your target heart rate zones for optimal exercise effectiveness.',
+      icon: <HeartPulse className="h-10 w-10 text-primary" />,
+      link: '/heart-rate-calculator',
+      available: false,
+    },
+    {
+      id: 'water-intake',
+      title: 'Water Intake Calculator',
+      description: 'Determine how much water you should drink daily based on your weight and activity level.',
+      icon: <Droplet className="h-10 w-10 text-primary" />,
+      link: '/water-intake-calculator',
+      available: false,
+    },
+    {
+      id: 'mental-health',
+      title: 'Mental Health Assessment',
+      description: 'Simple self-assessment tools to check your mental wellbeing and stress levels.',
+      icon: <Brain className="h-10 w-10 text-primary" />,
+      link: '/mental-health-assessment',
+      available: false,
+    },
+    {
+      id: 'macro',
+      title: 'Macro Calculator',
+      description: 'Calculate your optimal macronutrient intake for weight management and fitness goals.',
+      icon: <Calculator className="h-10 w-10 text-primary" />,
+      link: '/macro-calculator',
+      available: false,
+    },
+    {
+      id: 'blood-pressure',
+      title: 'Blood Pressure Checker',
+      description: 'Understand your blood pressure readings and what they mean for your health.',
+      icon: <BloodTest className="h-10 w-10 text-primary" />,
+      link: '/blood-pressure-checker',
+      available: false,
+    },
+    {
+      id: 'sleep',
+      title: 'Sleep Calculator',
+      description: 'Find the ideal bedtime and wake-up time based on sleep cycles for optimal rest.',
+      icon: <Moon className="h-10 w-10 text-primary" />,
+      link: '/sleep-calculator',
       available: false,
     },
   ];
