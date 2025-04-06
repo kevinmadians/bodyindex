@@ -1,86 +1,26 @@
+
 import React from 'react';
 import Layout from '@/components/Layout';
 import BMICalculator from '@/components/BMICalculator';
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Activity, BarChart3, Heart } from "lucide-react";
 
 const Index = () => {
   return (
     <Layout>
       <div className="max-w-5xl mx-auto">
-        {/* Enhanced Hero Section with Visual Elements */}
-        <div className="relative mb-10 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg -z-10"></div>
-          <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
-          <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
-          
-          <div className="text-center pt-10 pb-8 px-4">
-            <div className="inline-block">
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent mb-6 animate-fade-in">
-                BodyWise BMI Calculator
-              </h1>
-              <div className="h-1 w-32 bg-gradient-to-r from-primary to-primary/40 rounded-full mx-auto mb-8"></div>
-            </div>
-            
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-              Calculate your Body Mass Index (BMI) and get personalized insights about your health.
-            </p>
-            
-            {/* Statistics Boxes */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mt-8 mb-4 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-              <div className="bg-white/80 p-4 rounded-lg shadow-sm border border-primary/20 hover:shadow-md transition-all">
-                <div className="flex items-center gap-3 mb-2">
-                  <Activity className="h-5 w-5 text-primary" />
-                  <h3 className="font-semibold text-primary">Quick Insight</h3>
-                </div>
-                <p className="text-sm">Your BMI helps identify potential health risks and guides wellness decisions</p>
-              </div>
-              <div className="bg-white/80 p-4 rounded-lg shadow-sm border border-primary/20 hover:shadow-md transition-all">
-                <div className="flex items-center gap-3 mb-2">
-                  <BarChart3 className="h-5 w-5 text-primary" />
-                  <h3 className="font-semibold text-primary">Visual Results</h3>
-                </div>
-                <p className="text-sm">See where your BMI falls on the health spectrum with clear visual indicators</p>
-              </div>
-              <div className="bg-white/80 p-4 rounded-lg shadow-sm border border-primary/20 hover:shadow-md transition-all">
-                <div className="flex items-center gap-3 mb-2">
-                  <Heart className="h-5 w-5 text-primary" />
-                  <h3 className="font-semibold text-primary">Health Guidance</h3>
-                </div>
-                <p className="text-sm">Get personalized recommendations based on your BMI results</p>
-              </div>
-            </div>
-          </div>
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-bold text-primary mb-4">
+            BodyWise BMI Calculator
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Calculate your Body Mass Index (BMI) and get personalized insights about your health.
+          </p>
         </div>
 
-        {/* Enhanced BMI Calculator Card */}
-        <Card className="mb-10 shadow-lg border-t-4 border-t-primary overflow-hidden">
-          <div className="bg-gradient-to-r from-primary/10 to-transparent p-6">
-            <h2 className="text-2xl font-bold text-primary flex items-center gap-2">
-              <span className="inline-block w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm">
-                1
-              </span>
-              BMI Calculator
-              <span className="text-sm font-normal text-muted-foreground ml-auto">Quick, accurate results</span>
-            </h2>
-          </div>
-          
-          {/* BMI Calculator Component */}
-          <BMICalculator />
+        {/* BMI Calculator Component */}
+        <BMICalculator />
 
-          {/* Quick Tips */}
-          <div className="bg-muted/30 p-4 border-t">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="inline-block w-5 h-5 bg-primary/20 rounded-full flex items-center justify-center text-primary text-xs">
-                💡
-              </span>
-              <span>Tip: For the most accurate BMI calculation, measure your height without shoes and weight in light clothing.</span>
-            </div>
-          </div>
-        </Card>
-
-        {/* Keep the rest of the content the same */}
         {/* What is BMI Section - Enhanced */}
         <Card className="mb-10 shadow-md">
           <CardContent className="p-8">
