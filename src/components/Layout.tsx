@@ -38,12 +38,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <li>
                     <Link 
                       to="/" 
-                      className="nav-link flex items-center gap-1 hover:text-white/80 transition-colors relative group"
+                      className="font-bold hover:text-white/80 transition-colors relative group"
                     >
-                      <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                      </svg>
                       <span>Home</span>
                       <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
                     </Link>
@@ -53,13 +49,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <li>
                     <Link 
                       to="/about" 
-                      className="nav-link flex items-center gap-1 hover:text-white/80 transition-colors relative group"
+                      className="font-bold hover:text-white/80 transition-colors relative group"
                     >
-                      <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="16" x2="12" y2="12"></line>
-                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                      </svg>
                       <span>{isMobile ? "About" : "About BMI"}</span>
                       <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
                     </Link>
