@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Calculator, Scale, Activity, Heart, HeartPulse, Droplet, Brain, BloodTest, Moon } from 'lucide-react';
+import { ArrowRight, Calculator, Scale, Activity, Heart, HeartPulse, Droplet, Brain, Activity as ActivityIcon, Moon } from 'lucide-react';
 
 const HomePage = () => {
   // Available tools
@@ -76,7 +76,7 @@ const HomePage = () => {
       id: 'blood-pressure',
       title: 'Blood Pressure Checker',
       description: 'Understand your blood pressure readings and what they mean for your health.',
-      icon: <BloodTest className="h-10 w-10 text-primary" />,
+      icon: <ActivityIcon className="h-10 w-10 text-primary" />,
       link: '/blood-pressure-checker',
       available: false,
     },
