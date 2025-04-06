@@ -22,7 +22,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // Navigation items
   const navItems = [
-    { path: '/', label: 'Home' },
+    { path: '/bmi-calculator', label: 'BMI Calculator' },
     { path: '/guide', label: 'BMI Guide' },
     { path: '/health-tips', label: 'Health Tips' },
     { path: '/faq', label: 'FAQ' },

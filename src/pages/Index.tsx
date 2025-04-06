@@ -11,7 +11,7 @@ const Index = () => {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-primary mb-4">
-            BodyWise BMI Calculator
+            Body Index BMI Calculator
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Calculate your Body Mass Index (BMI) and get personalized insights about your health.
