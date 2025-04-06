@@ -110,47 +110,46 @@ const BMIResults: React.FC<BMIResultsProps> = ({
   return (
     <Card className="mb-8 border shadow-lg animate-scale-in">
       <CardContent className="p-6">
-        <div className="flex flex-col md:flex-row gap-6">
-          {/* Main BMI Result */}
-          <div className="flex-1">
-            <div className="text-center p-6 rounded-lg bg-muted mb-6">
-              <h3 className="text-xl font-semibold mb-1">Your BMI</h3>
-              <div className="flex items-center justify-center">
-                <span className="text-5xl font-bold text-primary">{bmi}</span>
-                <Badge className={`ml-3 ${getCategoryColorClass()} px-3 py-1 text-sm`}>
-                  {bmiCategory}
-                </Badge>
-              </div>
-              
-              <p className="mt-4 text-sm">
-                A healthy BMI range is <span className="font-semibold text-green-600">18.5 to 24.9</span>
-              </p>
-              
-              <div className="mt-4 p-3 bg-primary/10 rounded-lg inline-block">
-                <h4 className="text-sm font-semibold text-primary">Ideal Weight Range:</h4>
-                <p className="font-medium text-lg">
-                  {idealWeightRange.min} - {idealWeightRange.max} {unit === 'metric' ? 'kg' : 'lbs'}
-                </p>
-              </div>
-            </div>
-            
-            <Alert className="mb-6">
+        {/* Updated: More Compact Layout with Centered BMI Display */}
+        <div className="mb-6 text-center">
+          <h3 className="text-xl font-semibold mb-2">Your BMI</h3>
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <span className="text-6xl font-bold text-primary">{bmi}</span>
+            <Badge className={`${getCategoryColorClass()} px-3 py-1 text-sm`}>
+              {bmiCategory}
+            </Badge>
+          </div>
+          
+          <p className="mb-2 text-sm inline-block bg-primary/10 px-3 py-1 rounded-full">
+            A healthy BMI range is <span className="font-semibold text-green-600">18.5 to 24.9</span>
+          </p>
+          
+          <div className="mt-3 inline-block">
+            <p className="text-sm font-medium">
+              Ideal Weight Range: <span className="font-bold">{idealWeightRange.min} - {idealWeightRange.max} {unit === 'metric' ? 'kg' : 'lbs'}</span>
+            </p>
+          </div>
+        </div>
+                
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Health Risks and Formula */}
+          <div>
+            <Alert className="mb-4">
               <AlertTitle className="font-bold">Health Risk Assessment</AlertTitle>
-              <AlertDescription className="mt-2">
+              <AlertDescription className="mt-2 text-sm">
                 {healthRisks}
               </AlertDescription>
             </Alert>
 
-            {/* New: BMI Formula Explanation */}
-            <div className="p-4 border rounded-lg mb-6">
-              <h4 className="font-semibold mb-2">How Your BMI Was Calculated</h4>
-              <p className="text-sm mb-2">BMI = weight / (height²)</p>
+            <div className="p-3 border rounded-lg mb-4 text-sm">
+              <h4 className="font-semibold mb-1">How Your BMI Was Calculated</h4>
+              <p className="mb-1">BMI = weight / (height²)</p>
               {unit === 'metric' ? (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground">
                   Weight in kilograms divided by height in meters squared
                 </p>
               ) : (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground">
                   (Weight in pounds × 703) divided by height in inches squared
                 </p>
               )}
@@ -158,12 +157,12 @@ const BMIResults: React.FC<BMIResultsProps> = ({
           </div>
           
           {/* Recommendations */}
-          <div className="flex-1">
-            <h3 className="text-xl font-semibold mb-3">Your Action Plan</h3>
-            <ul className="space-y-3 mb-6">
-              {recommendations.map((recommendation, index) => (
-                <li key={index} className="flex items-start gap-2 p-2 hover:bg-muted/50 rounded-md transition-colors">
-                  <div className="h-6 w-6 flex-shrink-0 rounded-full bg-primary text-white flex items-center justify-center text-sm font-medium">
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Your Action Plan</h3>
+            <ul className="space-y-2 mb-4">
+              {recommendations.slice(0, 3).map((recommendation, index) => (
+                <li key={index} className="flex items-start gap-2 p-1.5 hover:bg-muted/50 rounded-md transition-colors text-sm">
+                  <div className="h-5 w-5 flex-shrink-0 rounded-full bg-primary text-white flex items-center justify-center text-xs font-medium">
                     {index + 1}
                   </div>
                   <span>{recommendation}</span>
@@ -171,15 +170,15 @@ const BMIResults: React.FC<BMIResultsProps> = ({
               ))}
             </ul>
             
-            {/* New: Health Insights Section */}
-            <div className="mt-6 border rounded-lg overflow-hidden">
-              <div className="bg-primary/10 p-3">
+            {/* Health Insights Section - Compact */}
+            <div className="border rounded-lg overflow-hidden text-sm">
+              <div className="bg-primary/10 p-2">
                 <h4 className="font-bold">{healthInsights.title}</h4>
               </div>
-              <div className="p-4">
-                <ul className="space-y-2">
-                  {healthInsights.insights.map((insight, index) => (
-                    <li key={index} className="text-sm flex items-start gap-2">
+              <div className="p-3">
+                <ul className="space-y-1.5">
+                  {healthInsights.insights.slice(0, 2).map((insight, index) => (
+                    <li key={index} className="flex items-start gap-1.5">
                       <span className="text-primary inline-block">•</span>
                       {insight}
                     </li>
@@ -187,14 +186,14 @@ const BMIResults: React.FC<BMIResultsProps> = ({
                 </ul>
               </div>
             </div>
-            
-            <div className="mt-6 p-4 bg-muted rounded-lg">
-              <h4 className="font-semibold mb-2">Important Note</h4>
-              <p className="text-sm text-muted-foreground">
-                BMI is a screening tool but it does not diagnose body fatness or health. Consult with a healthcare provider for a complete health assessment.
-              </p>
-            </div>
           </div>
+        </div>
+        
+        {/* Note section */}
+        <div className="mt-4 p-3 bg-muted rounded-lg text-xs text-center">
+          <p className="text-muted-foreground">
+            BMI is a screening tool but does not diagnose body fatness or health. Consult with a healthcare provider for a complete health assessment.
+          </p>
         </div>
       </CardContent>
     </Card>

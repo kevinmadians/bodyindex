@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface BMIChartProps {
   bmi: number;
@@ -8,6 +9,8 @@ interface BMIChartProps {
 }
 
 const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
+  const isMobile = useIsMobile();
+  
   // BMI categories and their ranges with improved, more visible colors
   const categories = [
     { name: "Underweight", range: "< 18.5", color: "bg-blue-500", start: 0, end: 18.5, risks: "Nutritional deficiencies, weakened immune system, osteoporosis" },
@@ -25,9 +28,17 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
     // Scale from 0 to 50 for the full chart width
     const percentage = (bmi / 50) * 100;
     
-    // Clamp to make sure it stays within the chart
+    // Ensure the indicator is properly positioned - fixed for mobile
     return Math.min(Math.max(percentage, 0), 100);
   };
+
+  // Find the correct category for the current BMI
+  const getCurrentCategory = () => {
+    if (bmi <= 0) return null;
+    return categories.find(category => bmi >= category.start && bmi < category.end);
+  };
+
+  const currentCategory = getCurrentCategory();
 
   return (
     <Card className="mb-8 shadow-lg animate-slide-up">
@@ -52,7 +63,8 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
                   position: 'relative'
                 }}
               >
-                {category.name}
+                {!isMobile && category.name}
+                {isMobile && (index === 0 || index === 2 || index === 4) && category.name}
               </div>
             ))}
           </div>
@@ -67,18 +79,22 @@ const BMIChart: React.FC<BMIChartProps> = ({ bmi, bmiCategory }) => {
             ))}
           </div>
           
-          {/* BMI Indicator with improved visibility */}
+          {/* BMI Indicator with improved visibility and mobile fix */}
           {bmi > 0 && (
             <div 
               className="absolute w-0 h-0 transform -translate-x-1/2"
               style={{ 
                 left: `${getIndicatorPosition()}%`, 
-                top: '-12px' 
+                top: '-12px',
+                zIndex: 10
               }}
             >
               <div className="h-16 w-1 bg-black"></div>
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full bg-primary text-white px-3 py-1.5 rounded text-sm font-bold whitespace-nowrap shadow-md">
                 Your BMI: {bmi}
+                {currentCategory && (
+                  <span className="ml-2">({currentCategory.name})</span>
+                )}
               </div>
             </div>
           )}
