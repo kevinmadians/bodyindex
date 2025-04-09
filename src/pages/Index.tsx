@@ -1,19 +1,21 @@
-
 import React from 'react';
 import Layout from '@/components/Layout';
 import BMICalculator from '@/components/BMICalculator';
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import usePageTitle from '@/hooks/usePageTitle';
+// import ToolHeroSection from '@/components/common/ToolHeroSection';
 
 const Index = () => {
+  usePageTitle('BMI Calculator - Body Index');
+
   return (
     <Layout>
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-primary mb-4">
-            Body Index BMI Calculator
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+        {/* Direct implementation of hero section with enhanced styling */}
+        <div className="mb-10 text-center">
+          <h1 className="text-3xl font-bold text-primary mb-2">Body Mass Index (BMI) Calculator</h1>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             Calculate your Body Mass Index (BMI) and get personalized insights about your health.
           </p>
         </div>
@@ -74,7 +76,9 @@ const Index = () => {
         {/* Health Tips Section - Enhanced */}
         <Card className="mb-10 shadow-md">
           <CardContent className="p-8">
-            <h2 className="text-2xl font-bold mb-6 text-primary">Healthy Living Guidelines</h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-primary">Healthy Living Guidelines</h2>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
               <div className="space-y-4">
@@ -98,9 +102,6 @@ const Index = () => {
                   </li>
                   <li>
                     <span className="font-medium">Limit Processed Foods:</span> Reduce intake of foods high in added sugars, sodium, and unhealthy fats
-                  </li>
-                  <li>
-                    <span className="font-medium">Mindful Eating:</span> Pay attention to hunger and fullness cues
                   </li>
                 </ul>
               </div>
@@ -127,37 +128,7 @@ const Index = () => {
                   <li>
                     <span className="font-medium">Consistency:</span> Regular activity is more beneficial than occasional intense workouts
                   </li>
-                  <li>
-                    <span className="font-medium">Daily Movement:</span> Reduce sitting time and incorporate movement throughout your day
-                  </li>
                 </ul>
-              </div>
-            </div>
-            
-            <Separator className="my-8" />
-            
-            {/* New: Mental Wellbeing Section */}
-            <div className="mb-8">
-              <h3 className="text-xl font-semibold mb-4">Mental Wellbeing</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 border rounded-lg hover:shadow-md transition-all">
-                  <h4 className="font-medium mb-2 text-primary">Stress Management</h4>
-                  <p className="text-sm">
-                    Chronic stress can affect metabolism, appetite, and eating behaviors. Practice stress-reduction techniques like meditation, deep breathing, or progressive muscle relaxation.
-                  </p>
-                </div>
-                <div className="p-4 border rounded-lg hover:shadow-md transition-all">
-                  <h4 className="font-medium mb-2 text-primary">Quality Sleep</h4>
-                  <p className="text-sm">
-                    Aim for 7-9 hours of quality sleep per night. Poor sleep can disrupt hormones that regulate hunger and appetite, potentially leading to weight gain.
-                  </p>
-                </div>
-                <div className="p-4 border rounded-lg hover:shadow-md transition-all">
-                  <h4 className="font-medium mb-2 text-primary">Positive Body Image</h4>
-                  <p className="text-sm">
-                    Focus on health improvements rather than just weight. Celebrate non-scale victories like increased energy, better sleep, and improved fitness.
-                  </p>
-                </div>
               </div>
             </div>
           </CardContent>
@@ -166,7 +137,9 @@ const Index = () => {
         {/* New: FAQ Section */}
         <Card className="mb-10 shadow-md">
           <CardContent className="p-8">
-            <h2 className="text-2xl font-bold mb-6 text-primary">Frequently Asked Questions</h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-primary">Frequently Asked Questions</h2>
+            </div>
             
             <div className="space-y-4">
               <div className="p-4 border rounded-lg">
@@ -187,13 +160,6 @@ const Index = () => {
                 <h3 className="font-semibold text-lg mb-2">What are other health metrics I should track besides BMI?</h3>
                 <p>
                   Consider tracking waist circumference, body fat percentage, blood pressure, cholesterol levels, blood glucose, and fitness metrics like endurance and strength. A healthcare provider can help determine which measurements are most relevant for your health status.
-                </p>
-              </div>
-              
-              <div className="p-4 border rounded-lg">
-                <h3 className="font-semibold text-lg mb-2">How can I maintain weight loss long-term?</h3>
-                <p>
-                  Sustainable weight management comes from lifestyle changes rather than temporary diets. Focus on consistent healthy eating patterns, regular physical activity, stress management, adequate sleep, and social support. Small, maintainable changes are more effective than drastic measures.
                 </p>
               </div>
             </div>

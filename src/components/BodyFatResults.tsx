@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
@@ -25,14 +24,14 @@ const BodyFatResults: React.FC<BodyFatResultsProps> = ({
       if (bodyFatPercentage < 6) return { category: 'Essential Fat', description: 'This is the minimum level of fat required for basic physiological health.', color: '#2196F3' };
       if (bodyFatPercentage < 14) return { category: 'Athletic', description: 'Typical for athletes and those with very active lifestyles.', color: '#4CAF50' };
       if (bodyFatPercentage < 18) return { category: 'Fitness', description: 'A fit and healthy range that indicates regular exercise.', color: '#00BCD4' };
-      if (bodyFatPercentage < 25) return { category: 'Average', description: 'The average body fat percentage for men.', color: '#FFEB3B' };
+      if (bodyFatPercentage < 25) return { category: 'Average', description: 'The average body fat percentage for men.', color: '#F6C70B' };
       if (bodyFatPercentage < 31) return { category: 'Overweight', description: 'Above average body fat that may pose health risks.', color: '#FF9800' };
       return { category: 'Obese', description: 'Significantly higher than average, with increased health risks.', color: '#F44336' };
     } else {
       if (bodyFatPercentage < 14) return { category: 'Essential Fat', description: 'This is the minimum level of fat required for basic physiological health.', color: '#2196F3' };
       if (bodyFatPercentage < 21) return { category: 'Athletic', description: 'Typical for athletes and those with very active lifestyles.', color: '#4CAF50' };
       if (bodyFatPercentage < 25) return { category: 'Fitness', description: 'A fit and healthy range that indicates regular exercise.', color: '#00BCD4' };
-      if (bodyFatPercentage < 32) return { category: 'Average', description: 'The average body fat percentage for women.', color: '#FFEB3B' };
+      if (bodyFatPercentage < 32) return { category: 'Average', description: 'The average body fat percentage for women.', color: '#F6C70B' };
       if (bodyFatPercentage < 38) return { category: 'Overweight', description: 'Above average body fat that may pose health risks.', color: '#FF9800' };
       return { category: 'Obese', description: 'Significantly higher than average, with increased health risks.', color: '#F44336' };
     }

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
@@ -52,7 +51,7 @@ const ToolCard: React.FC<ToolCardProps> = ({
                   to={link} 
                   className="inline-flex items-center text-primary hover:text-primary/80 gap-1 font-medium group"
                 >
-                  Use Calculator
+                  Use Tool
                   <ArrowRight className="h-4 w-4 transform transition-transform group-hover:translate-x-1" />
                 </Link>
               ) : (
@@ -64,7 +63,7 @@ const ToolCard: React.FC<ToolCardProps> = ({
           </CardContent>
         </Card>
       </HoverCardTrigger>
-      <HoverCardContent className="w-80 p-4">
+      <HoverCardContent className="hidden md:block w-80 p-4">
         <div className="space-y-2">
           <h4 className="text-sm font-semibold">{title}</h4>
           <p className="text-sm text-muted-foreground">{detailedDescription}</p>

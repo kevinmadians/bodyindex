@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -81,7 +80,7 @@ export default {
 				},
 				'bmi-yellow': {
 					light: '#FFFDE7',
-					DEFAULT: '#FFEB3B',
+					DEFAULT: '#F6C70B',
 					dark: '#F57F17',
 				},
 				'bmi-orange': {
@@ -129,6 +128,10 @@ export default {
 					'0%': { transform: 'scale(0.95)', opacity: '0' },
 					'100%': { transform: 'scale(1)', opacity: '1' }
 				},
+				'slideDownAndFade': {
+					from: { transform: 'translateY(-2px)', opacity: '0' },
+					to: { transform: 'translateY(0)', opacity: '1' }
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -136,6 +139,7 @@ export default {
 				'fade-in': 'fade-in 0.3s ease-out',
 				'slide-up': 'slide-up 0.4s ease-out',
 				'scale-in': 'scale-in 0.2s ease-out',
+				'slideDownAndFade': 'slideDownAndFade 0.2s ease-out',
 			}
 		}
 	},

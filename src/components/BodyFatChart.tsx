@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
@@ -14,7 +13,7 @@ const BodyFatChart: React.FC<BodyFatChartProps> = ({ bodyFatPercentage, gender }
         { name: 'Essential Fat', min: 2, max: 5, color: '#2196F3' },
         { name: 'Athletic', min: 6, max: 13, color: '#4CAF50' },
         { name: 'Fitness', min: 14, max: 17, color: '#00BCD4' },
-        { name: 'Average', min: 18, max: 24, color: '#FFEB3B' },
+        { name: 'Average', min: 18, max: 24, color: '#F6C70B' },
         { name: 'Overweight', min: 25, max: 30, color: '#FF9800' },
         { name: 'Obese', min: 31, max: 50, color: '#F44336' }
       ]
@@ -22,7 +21,7 @@ const BodyFatChart: React.FC<BodyFatChartProps> = ({ bodyFatPercentage, gender }
         { name: 'Essential Fat', min: 10, max: 13, color: '#2196F3' },
         { name: 'Athletic', min: 14, max: 20, color: '#4CAF50' },
         { name: 'Fitness', min: 21, max: 24, color: '#00BCD4' },
-        { name: 'Average', min: 25, max: 31, color: '#FFEB3B' },
+        { name: 'Average', min: 25, max: 31, color: '#F6C70B' },
         { name: 'Overweight', min: 32, max: 37, color: '#FF9800' },
         { name: 'Obese', min: 38, max: 50, color: '#F44336' }
       ];

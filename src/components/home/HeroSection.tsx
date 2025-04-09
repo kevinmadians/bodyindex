@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
@@ -28,7 +27,7 @@ const HeroSection = () => {
             </Link>
           </div>
         </div>
-        <div className="flex-1 relative">
+        <div className="flex-1 relative hidden md:block">
           <div className="relative w-full h-64 md:h-80 overflow-hidden rounded-lg shadow-md animate-float">
             <img 
               src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" 
@@ -36,8 +35,6 @@ const HeroSection = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="absolute -bottom-3 -left-3 w-20 h-20 bg-primary/10 rounded-full animate-pulse"></div>
-          <div className="absolute -top-3 -right-3 w-16 h-16 bg-primary/20 rounded-full animate-pulse" style={{ animationDelay: "1s" }}></div>
         </div>
       </div>
     </div>

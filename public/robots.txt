@@ -12,3 +12,29 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Enhanced robots.txt for bodyindex.net
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /internal/
+
+# Bots with higher crawl rates
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+# Social media bots
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+# Sitemap location
+Sitemap: https://bodyindex.net/sitemap.xml
