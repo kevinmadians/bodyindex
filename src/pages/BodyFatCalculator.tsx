@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Layout from '@/components/Layout';
+import usePageTitle from '@/hooks/usePageTitle';
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -9,22 +10,39 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import usePageTitle from '@/hooks/usePageTitle';
 import ToolHeroSection from '@/components/common/ToolHeroSection';
 import BodyFatCalculatorRedesigned from '@/components/BodyFatCalculatorRedesigned';
+import SEO from '@/components/SEO';
+import seoData from '@/data/seoData';
+import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Info } from "lucide-react";
+import { BodyFatChart } from '@/components/BodyFatChart';
+import { BodyFatResults } from '@/components/BodyFatResults';
+import { CalculatorForm } from '@/components/body-fat-calculator/CalculatorForm';
+
+interface BodyFatResult {
+  // ... existing code ...
+}
 
 const BodyFatCalculator = () => {
   usePageTitle('Body Fat Calculator - Body Index');
 
   return (
     <Layout>
-      <div className="max-w-5xl mx-auto">
+      <SEO 
+        title={seoData.bodyFatCalculator.title}
+        description={seoData.bodyFatCalculator.description}
+        keywords={seoData.bodyFatCalculator.keywords}
+        structuredData={seoData.bodyFatCalculator.structuredData}
+        canonical="https://bodyindex.net/body-fat-calculator"
+      />
+      <div className="max-w-5xl mx-auto px-4">
         <ToolHeroSection 
-          title="Body Fat Calculator" 
-          description="Estimate your body fat percentage using multiple methods and get personalized insights about your body composition."
+          title="Body Fat Calculator"
+          description="Calculate your body fat percentage using multiple methods and understand what your results mean"
         />
 
-        {/* Body Fat Calculator Component */}
         <BodyFatCalculatorRedesigned />
 
         <div className="bg-white rounded-lg shadow-md p-6 my-8">

@@ -163,6 +163,22 @@ export const getTrainingRecommendations = (
     );
   }
   
+  if (goals.includes('recovery')) {
+    recommendations.push(
+      'Prioritize Zone 1 training (50-60% of max HR) for active recovery days',
+      'Keep heart rate low during recovery sessions to promote healing',
+      'Consider alternating hard training days with Zone 1 recovery days'
+    );
+  }
+  
+  if (goals.includes('health')) {
+    recommendations.push(
+      'Aim for a balanced approach across all heart rate zones',
+      'Spend most training time in Zone 2 for cardiovascular health',
+      'Include at least 150 minutes of moderate activity per week per health guidelines'
+    );
+  }
+  
   // Add fitness level specific recommendations
   switch (fitnessLevel) {
     case 'beginner':

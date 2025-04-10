@@ -88,12 +88,16 @@ export const BPCalculator = () => {
     // Scroll to results section
     setTimeout(() => {
       if (resultsRef.current) {
-        resultsRef.current.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start' 
+        const yOffset = -80; // Offset to ensure the "Your Results" heading is visible
+        const element = resultsRef.current;
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        
+        window.scrollTo({
+          top: y,
+          behavior: 'smooth'
         });
       }
-    }, 100);
+    }, 300); // Increased delay to ensure content is rendered
   };
 
   // Handle deleting a reading
@@ -318,7 +322,7 @@ ${notes ? `Notes: ${notes}` : ''}
             
             <Card className="overflow-hidden">
               <CardContent className="pt-6">
-                <div ref={resultsRef}>
+                <div ref={resultsRef} className="scroll-mt-20">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-semibold">Your Results</h3>
                     <div 

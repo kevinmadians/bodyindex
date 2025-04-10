@@ -15,6 +15,9 @@ import ReactConfetti from 'react-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from "@/components/ui/use-toast";
 import ToolHeroSection from '@/components/common/ToolHeroSection';
+import { NumericInput } from '@/components/ui/NumericInput';
+import SEO from '@/components/SEO';
+import seoData from '@/data/seoData';
 
 interface WaterIntakeResult {
   dailyIntake: number;
@@ -292,6 +295,8 @@ const WaterIntakeCalculator = () => {
   const resultRef = useRef<HTMLDivElement>(null);
   const [weight, setWeight] = useState<number>(70);
   const [weightUnit, setWeightUnit] = useState<'kg' | 'lbs'>('kg');
+  const prevUnitRef = useRef(weightUnit);
+  
   const [activityLevel, setActivityLevel] = useState<string>('moderate');
   const [climate, setClimate] = useState<string>('moderate');
   const [result, setResult] = useState<WaterIntakeResult | null>(null);
@@ -324,6 +329,23 @@ const WaterIntakeCalculator = () => {
     }
   }, [progress]);
 
+  // Convert weight when unit changes (not when weight itself changes)
+  useEffect(() => {
+    // Only do conversion if the unit actually changed
+    if (weight > 0) {
+      if (weightUnit === 'lbs' && prevUnitRef.current === 'kg') {
+        // Convert from kg to lbs
+        setWeight(Math.round(weight * 2.20462));
+      } else if (weightUnit === 'kg' && prevUnitRef.current === 'lbs') {
+        // Convert from lbs to kg
+        setWeight(Math.round(weight / 2.20462));
+      }
+    }
+    
+    // Update ref to current unit
+    prevUnitRef.current = weightUnit;
+  }, [weightUnit]); // Only depend on weightUnit, not weight
+
   const activityLevels = {
     sedentary: 'Sedentary (Little to no exercise)',
     light: 'Light (Exercise 1-3 times/week)',
@@ -341,10 +363,20 @@ const WaterIntakeCalculator = () => {
 
   const calculateWaterIntake = () => {
     // Validate inputs
-    if (weight < 30 || weight > 250) {
+    if (!weight || weight <= 0) {
       toast({
-        title: "Weight out of range",
-        description: "Please enter a weight between 30 and 250 kg (66-550 lbs)",
+        title: "Missing weight",
+        description: "Please enter a valid weight value",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if ((weightUnit === 'kg' && (weight < 30 || weight > 250)) || 
+        (weightUnit === 'lbs' && (weight < 66 || weight > 550))) {
+      toast({
+        title: "Invalid weight",
+        description: `Please enter a weight between ${weightUnit === 'kg' ? '30-250 kg' : '66-550 lbs'}`,
         variant: "destructive"
       });
       return;
@@ -396,11 +428,17 @@ const WaterIntakeCalculator = () => {
     
     // Scroll to result after a short delay to ensure rendering
     setTimeout(() => {
-      resultRef.current?.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }, 100);
+      if (resultRef.current) {
+        const yOffset = -80; // Offset to ensure the "Your Results" heading is visible
+        const element = resultRef.current;
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        
+        window.scrollTo({
+          top: y,
+          behavior: 'smooth'
+        });
+      }
+    }, 300); // Increased delay to ensure content is rendered
   };
 
   useEffect(() => {
@@ -427,6 +465,13 @@ const WaterIntakeCalculator = () => {
 
   return (
     <Layout>
+      <SEO 
+        title={seoData.waterIntakeCalculator.title}
+        description={seoData.waterIntakeCalculator.description}
+        keywords={seoData.waterIntakeCalculator.keywords}
+        structuredData={seoData.waterIntakeCalculator.structuredData}
+        canonical="https://bodyindex.net/water-intake-calculator"
+      />
       <div className="max-w-5xl mx-auto">
         <ToolHeroSection 
           title="Water Intake Calculator"
@@ -472,11 +517,25 @@ const WaterIntakeCalculator = () => {
                   <div>
                     <Label>Weight</Label>
                     <div className="flex gap-4">
-                      <Input
-                        type="number"
-                        value={weight}
-                        onChange={(e) => setWeight(Number(e.target.value))}
+                      <NumericInput
+                        value={weight.toString()}
+                        onValueChange={(value) => {
+                          // Allow editing the field freely
+                          setWeight(value !== null ? value : 0);
+                        }}
                         className="flex-1"
+                        placeholder={`Enter weight in ${weightUnit}`}
+                        min={weightUnit === 'kg' ? 30 : 66}
+                        max={weightUnit === 'kg' ? 250 : 550}
+                        error={
+                          weight !== 0 && (
+                            (weightUnit === 'kg' && (weight < 30 || weight > 250)) || 
+                            (weightUnit === 'lbs' && (weight < 66 || weight > 550))
+                          ) 
+                            ? `Valid range: ${weightUnit === 'kg' ? '30-250 kg' : '66-550 lbs'}` 
+                            : undefined
+                        }
+                        required
                       />
                       <RadioGroup
                         value={weightUnit}
@@ -531,10 +590,10 @@ const WaterIntakeCalculator = () => {
             </Card>
 
             {result && (
-              <div ref={resultRef} className="scroll-mt-6">
+              <div ref={resultRef} className="scroll-mt-20">
                 <Card className="mb-8 shadow-lg">
                   <CardContent className="p-8">
-                    <h2 className="text-2xl font-bold mb-6">Your Results</h2>
+                    <h2 className="text-2xl font-bold mb-6 text-primary">Your Results</h2>
                     
                     <div className="space-y-6">
                       <div className="text-center">

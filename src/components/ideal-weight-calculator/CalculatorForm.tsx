@@ -6,8 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent } from '@/components/ui/card';
-import { Ruler, Wand2, Zap, ArrowRight, User } from 'lucide-react';
+import { Ruler, Wand2, Zap, ArrowRight, User, AlertCircle } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { NumericInput } from '@/components/ui/NumericInput';
 
 interface CalculatorFormProps {
   onSubmit: (data: {
@@ -26,9 +27,48 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
   const [measurementUnit, setMeasurementUnit] = useState<'metric' | 'imperial'>('metric');
   const [heightFt, setHeightFt] = useState<number>(5);
   const [heightIn, setHeightIn] = useState<number>(7);
+  const [errors, setErrors] = useState<{
+    height?: string;
+    age?: string;
+    wrist?: string;
+    heightFt?: string;
+    heightIn?: string;
+  }>({});
+
+  const validateForm = () => {
+    const newErrors: typeof errors = {};
+    
+    if (measurementUnit === 'metric') {
+      if (height < 150 || height > 220) {
+        newErrors.height = 'Height must be between 150-220 cm for accurate results';
+      }
+    } else {
+      const totalInches = (heightFt * 12) + heightIn;
+      if (totalInches < 59 || totalInches > 87) {
+        newErrors.heightFt = 'Height must be between 4\'11" and 7\'3" for accurate results';
+      }
+    }
+
+    if (age < 18 || age > 100) {
+      newErrors.age = 'Age must be between 18-100 years for accurate results';
+    }
+
+    const minWrist = gender === 'male' ? 15 : 14;
+    const maxWrist = gender === 'male' ? 19 : 16;
+    if (wristCircumference < minWrist || wristCircumference > maxWrist) {
+      newErrors.wrist = `Wrist circumference must be between ${minWrist}-${maxWrist} cm for ${gender === 'male' ? 'men' : 'women'}`;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
     
     let heightInCm = height;
     if (measurementUnit === 'imperial') {
@@ -48,7 +88,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
   return (
     <Card className="shadow-md border-t-4 border-t-primary overflow-hidden">
       <CardContent className="pt-6">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col items-center text-center mb-6">
           <h2 className="text-xl font-bold flex items-center">
             <Ruler className="h-5 w-5 mr-2 text-primary" />
             Enter Your Measurements
@@ -56,7 +96,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="bg-primary/10 p-1.5 rounded-full">
+                <div className="bg-primary/10 p-1.5 rounded-full mt-2">
                   <Zap className="h-4 w-4 text-primary" />
                 </div>
               </TooltipTrigger>
@@ -133,17 +173,24 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
                   </span>
                   Height (cm)
                 </Label>
-                <Input
+                <NumericInput
                   id="height"
-                  type="number"
-                  value={height}
-                  onChange={(e) => setHeight(Number(e.target.value))}
-                  min="100"
-                  max="250"
-                  required
-                  className="border-primary/20 focus:border-primary transition-colors group-hover:border-primary/40"
+                  value={height === 0 ? '' : height.toString()}
+                  onValueChange={(value: number | undefined) => {
+                    setHeight(value || height);
+                    setErrors({ ...errors, height: undefined });
+                  }}
+                  min={150}
+                  max={220}
+                  className={`border-primary/20 focus:border-primary transition-colors group-hover:border-primary/40 ${errors.height ? 'border-red-500' : ''}`}
                 />
-                <div className="text-xs text-muted-foreground pl-7">Typical range: 150-190 cm</div>
+                {errors.height && (
+                  <div className="flex items-center text-xs text-red-500 pl-7 mt-1">
+                    <AlertCircle className="h-3 w-3 mr-1" />
+                    {errors.height}
+                  </div>
+                )}
+                <div className="text-xs text-muted-foreground pl-7">Recommended range: 150-220 cm</div>
               </div>
             ) : (
               <>
@@ -159,15 +206,17 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
                     </span>
                     Height (feet)
                   </Label>
-                  <Input
+                  <NumericInput
                     id="height-ft"
-                    type="number"
-                    value={heightFt}
-                    onChange={(e) => setHeightFt(Number(e.target.value))}
-                    min="3"
-                    max="8"
-                    required
-                    className="border-primary/20 focus:border-primary transition-colors group-hover:border-primary/40"
+                    value={heightFt === 0 ? '' : heightFt.toString()}
+                    onValueChange={(value: number | undefined) => {
+                      setHeightFt(value || heightFt);
+                      setErrors({ ...errors, heightFt: undefined });
+                    }}
+                    min={3}
+                    max={8}
+                    placeholder="ft"
+                    className={`border-primary/20 focus:border-primary transition-colors group-hover:border-primary/40 ${errors.heightFt ? 'border-red-500' : ''}`}
                   />
                 </div>
                 <div className="space-y-2 group">
@@ -182,15 +231,17 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
                     </span>
                     Height (inches)
                   </Label>
-                  <Input
+                  <NumericInput
                     id="height-in"
-                    type="number"
-                    value={heightIn}
-                    onChange={(e) => setHeightIn(Number(e.target.value))}
-                    min="0"
-                    max="11"
-                    required
-                    className="border-primary/20 focus:border-primary transition-colors group-hover:border-primary/40"
+                    value={heightIn === 0 ? '' : heightIn.toString()}
+                    onValueChange={(value: number | undefined) => {
+                      setHeightIn(value || heightIn);
+                      setErrors({ ...errors, heightIn: undefined });
+                    }}
+                    min={0}
+                    max={11}
+                    placeholder="in"
+                    className={`border-primary/20 focus:border-primary transition-colors group-hover:border-primary/40 ${errors.heightIn ? 'border-red-500' : ''}`}
                   />
                 </div>
               </>
@@ -206,17 +257,24 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
                 </span>
                 Age
               </Label>
-              <Input
+              <NumericInput
                 id="age"
-                type="number"
-                value={age}
-                onChange={(e) => setAge(Number(e.target.value))}
-                min="18"
-                max="120"
-                required
-                className="border-primary/20 focus:border-primary transition-colors group-hover:border-primary/40"
+                value={age === 0 ? '' : age.toString()}
+                onValueChange={(value: number | undefined) => {
+                  setAge(value || age);
+                  setErrors({ ...errors, age: undefined });
+                }}
+                min={18}
+                max={100}
+                className={`border-primary/20 focus:border-primary transition-colors group-hover:border-primary/40 ${errors.age ? 'border-red-500' : ''}`}
               />
-              <div className="text-xs text-muted-foreground pl-7">Enter your current age (18-120 years)</div>
+              {errors.age && (
+                <div className="flex items-center text-xs text-red-500 pl-7 mt-1">
+                  <AlertCircle className="h-3 w-3 mr-1" />
+                  {errors.age}
+                </div>
+              )}
+              <div className="text-xs text-muted-foreground pl-7">Enter your current age (18-100 years)</div>
             </div>
 
             <div className="space-y-2 group">
@@ -229,17 +287,23 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
                 </span>
                 Wrist Circumference (cm)
               </Label>
-              <Input
+              <NumericInput
                 id="wrist"
-                type="number"
-                value={wristCircumference}
-                onChange={(e) => setWristCircumference(Number(e.target.value))}
-                min="10"
-                max="25"
-                step="0.1"
-                required
-                className="border-primary/20 focus:border-primary transition-colors group-hover:border-primary/40"
+                value={wristCircumference === 0 ? '' : wristCircumference.toString()}
+                onValueChange={(value: number | undefined) => {
+                  setWristCircumference(value || wristCircumference);
+                  setErrors({ ...errors, wrist: undefined });
+                }}
+                min={gender === 'male' ? 15 : 14}
+                max={gender === 'male' ? 19 : 16}
+                className={`border-primary/20 focus:border-primary transition-colors group-hover:border-primary/40 ${errors.wrist ? 'border-red-500' : ''}`}
               />
+              {errors.wrist && (
+                <div className="flex items-center text-xs text-red-500 pl-7 mt-1">
+                  <AlertCircle className="h-3 w-3 mr-1" />
+                  {errors.wrist}
+                </div>
+              )}
               <div className="flex items-center pl-7">
                 <p className="text-xs text-muted-foreground">
                   Measure around the wrist bone

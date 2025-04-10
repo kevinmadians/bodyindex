@@ -1,1 +1,11 @@
- 
+Note: This is a placeholder text file. To create a proper favicon.png:
+
+1. Use the SVG favicon as a base (public/favicon.svg)
+2. Convert it to PNG format at 32x32 pixels
+3. Save it as favicon.png in the public directory
+
+You can use tools like:
+- SVGOMG (https://jakearchibald.github.io/svgomg/)
+- Figma
+- Adobe Illustrator
+- Or any online SVG to PNG converter

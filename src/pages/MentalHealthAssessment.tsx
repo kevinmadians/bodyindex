@@ -18,6 +18,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ToolHeroSection from '@/components/common/ToolHeroSection';
+import SEO from '@/components/SEO';
+import seoData from '@/data/seoData';
 
 interface Question {
   id: number;
@@ -349,6 +351,13 @@ Note: This assessment is for informational purposes only and should not be consi
 
   return (
     <Layout>
+      <SEO 
+        title={seoData.mentalHealthAssessment.title}
+        description={seoData.mentalHealthAssessment.description}
+        keywords={seoData.mentalHealthAssessment.keywords}
+        structuredData={seoData.mentalHealthAssessment.structuredData}
+        canonical="https://bodyindex.net/mental-health-assessment"
+      />
       <div className="max-w-5xl mx-auto">
         <ToolHeroSection 
           title="Mental Health Assessment"
@@ -421,10 +430,10 @@ Note: This assessment is for informational purposes only and should not be consi
                       <h2 className="text-2xl font-bold mb-4">Your Assessment Results</h2>
                       <p className="text-muted-foreground mb-6">Here's a detailed analysis of your mental well-being across different categories</p>
                       
-                      <div className="flex justify-center gap-4 mb-8">
+                      <div className="flex flex-col sm:flex-row justify-center gap-3 mb-8 w-full">
                         <Button
                           variant="outline"
-                          className="flex items-center gap-2"
+                          className="flex items-center gap-2 w-full sm:w-auto justify-center"
                           onClick={() => handleShareResults('email')}
                         >
                           <Mail className="h-4 w-4" />
@@ -432,7 +441,7 @@ Note: This assessment is for informational purposes only and should not be consi
                         </Button>
                         <Button
                           variant="outline"
-                          className="flex items-center gap-2"
+                          className="flex items-center gap-2 w-full sm:w-auto justify-center"
                           onClick={() => handleShareResults('twitter')}
                         >
                           <Twitter className="h-4 w-4" />
@@ -440,7 +449,7 @@ Note: This assessment is for informational purposes only and should not be consi
                         </Button>
                         <Button
                           variant="outline"
-                          className="flex items-center gap-2"
+                          className="flex items-center gap-2 w-full sm:w-auto justify-center"
                           onClick={handleDownloadResults}
                         >
                           <Download className="h-4 w-4" />

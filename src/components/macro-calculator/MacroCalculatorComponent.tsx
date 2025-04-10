@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,6 +9,7 @@ import { MacroResults } from './MacroResults';
 import { toast } from "@/components/ui/use-toast";
 import { Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { NumericInput } from '@/components/ui/NumericInput';
 
 interface MacroResult {
   calories: number;
@@ -61,20 +61,38 @@ export const MacroCalculatorComponent = () => {
 
   const calculateMacros = () => {
     // Validate inputs
-    if (age < 15 || age > 80) {
+    if (!age || age < 15 || age > 80) {
       toast({
         title: "Invalid Age",
-        description: "Please enter an age between 15 and 80",
+        description: age === 0 ? "Age is required" : "Please enter an age between 15 and 80",
         variant: "destructive"
       });
       return;
     }
 
-    if ((measurementUnit === 'metric' && (weight < 40 || weight > 200)) || 
+    if (!height) {
+      toast({
+        title: "Invalid Height",
+        description: "Height is required",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!weight || (measurementUnit === 'metric' && (weight < 40 || weight > 200)) || 
         (measurementUnit === 'imperial' && (weight < 88 || weight > 440))) {
       toast({
         title: "Invalid Weight",
-        description: `Please enter a weight between ${measurementUnit === 'metric' ? '40-200 kg' : '88-440 lbs'}`,
+        description: weight === 0 ? "Weight is required" : `Please enter a weight between ${measurementUnit === 'metric' ? '40-200 kg' : '88-440 lbs'}`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (useBodyFat && (bodyFat === null || bodyFat === 0)) {
+      toast({
+        title: "Invalid Body Fat Percentage",
+        description: "Body fat percentage is required when using body fat calculation method",
         variant: "destructive"
       });
       return;
@@ -188,11 +206,17 @@ export const MacroCalculatorComponent = () => {
     
     // Scroll to results
     setTimeout(() => {
-      resultRef.current?.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }, 100);
+      if (resultRef.current) {
+        const yOffset = -80; // Offset to ensure the heading is visible
+        const element = resultRef.current;
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        
+        window.scrollTo({
+          top: y,
+          behavior: 'smooth'
+        });
+      }
+    }, 300); // Increased delay to ensure content is rendered
   };
 
   return (
@@ -201,8 +225,6 @@ export const MacroCalculatorComponent = () => {
         <CardContent className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
-              <h2 className="text-xl font-bold mb-4">Personal Information</h2>
-              
               <div>
                 <Label>Gender</Label>
                 <RadioGroup 
@@ -223,14 +245,15 @@ export const MacroCalculatorComponent = () => {
               
               <div>
                 <Label htmlFor="age">Age</Label>
-                <Input
+                <NumericInput
                   id="age"
-                  type="number"
-                  value={age}
-                  onChange={(e) => setAge(Number(e.target.value))}
-                  min="15"
-                  max="80"
+                  value={age === 0 ? '' : age.toString()}
+                  onValueChange={(value) => setAge(value || 0)}
+                  min={15}
+                  max={80}
                   className="mt-1"
+                  required
+                  error={age === 0 ? "Age is required" : (age < 15 || age > 80) ? `Age should be between 15-80 years` : undefined}
                 />
               </div>
               
@@ -258,14 +281,15 @@ export const MacroCalculatorComponent = () => {
                 <Label htmlFor="height">
                   Height ({measurementUnit === 'metric' ? 'cm' : 'inches'})
                 </Label>
-                <Input
+                <NumericInput
                   id="height"
-                  type="number"
-                  value={height}
-                  onChange={(e) => setHeight(Number(e.target.value))}
-                  min={measurementUnit === 'metric' ? "140" : "55"}
-                  max={measurementUnit === 'metric' ? "220" : "87"}
+                  value={height === 0 ? '' : height.toString()}
+                  onValueChange={(value) => setHeight(value || 0)}
+                  min={measurementUnit === 'metric' ? 140 : 55}
+                  max={measurementUnit === 'metric' ? 220 : 87}
                   className="mt-1"
+                  required
+                  error={height === 0 ? "Height is required" : (measurementUnit === 'metric' && (height < 140 || height > 220)) || (measurementUnit === 'imperial' && (height < 55 || height > 87)) ? `Height should be between ${measurementUnit === 'metric' ? '140-220 cm' : '55-87 inches'}` : undefined}
                 />
               </div>
               
@@ -273,14 +297,15 @@ export const MacroCalculatorComponent = () => {
                 <Label htmlFor="weight">
                   Weight ({measurementUnit === 'metric' ? 'kg' : 'lbs'})
                 </Label>
-                <Input
+                <NumericInput
                   id="weight"
-                  type="number"
-                  value={weight}
-                  onChange={(e) => setWeight(Number(e.target.value))}
-                  min={measurementUnit === 'metric' ? "40" : "88"}
-                  max={measurementUnit === 'metric' ? "200" : "440"}
+                  value={weight === 0 ? '' : weight.toString()}
+                  onValueChange={(value) => setWeight(value || 0)}
+                  min={measurementUnit === 'metric' ? 40 : 88}
+                  max={measurementUnit === 'metric' ? 200 : 440}
                   className="mt-1"
+                  required
+                  error={weight === 0 ? "Weight is required" : (measurementUnit === 'metric' && (weight < 40 || weight > 200)) || (measurementUnit === 'imperial' && (weight < 88 || weight > 440)) ? `Weight should be between ${measurementUnit === 'metric' ? '40-200 kg' : '88-440 lbs'}` : undefined}
                 />
               </div>
               
@@ -311,15 +336,16 @@ export const MacroCalculatorComponent = () => {
                 {useBodyFat && (
                   <>
                     <Label htmlFor="bodyFat">Body Fat Percentage (%)</Label>
-                    <Input
+                    <NumericInput
                       id="bodyFat"
-                      type="number"
-                      value={bodyFat === null ? '' : bodyFat}
-                      onChange={(e) => setBodyFat(e.target.value === '' ? null : Number(e.target.value))}
-                      min="5"
-                      max="50"
+                      value={bodyFat === null ? '' : bodyFat.toString()}
+                      onValueChange={(value) => setBodyFat(value || 0)}
+                      min={5}
+                      max={50}
                       placeholder="Enter your body fat %"
                       className="mt-1"
+                      required
+                      error={bodyFat === null || bodyFat === 0 ? "Body fat percentage is required" : (bodyFat < 5 || bodyFat > 50) ? `Body fat should be between 5-50%` : undefined}
                     />
                   </>
                 )}
@@ -327,8 +353,6 @@ export const MacroCalculatorComponent = () => {
             </div>
             
             <div className="space-y-4">
-              <h2 className="text-xl font-bold mb-4">Goals & Activity</h2>
-              
               <div>
                 <Label>Activity Level</Label>
                 <Select value={activityLevel} onValueChange={setActivityLevel}>
@@ -381,11 +405,12 @@ export const MacroCalculatorComponent = () => {
         </CardContent>
       </Card>
 
-      {result && (
-        <div ref={resultRef} className="scroll-mt-6">
+      {/* Results Section */}
+      <div ref={resultRef} className="scroll-mt-20">
+        {result && (
           <MacroResults result={result} goal={goal} />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }; 

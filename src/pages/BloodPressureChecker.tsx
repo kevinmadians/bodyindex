@@ -3,12 +3,21 @@ import Layout from '@/components/Layout';
 import { BPCalculator } from '@/components/blood-pressure/BPCalculator';
 import usePageTitle from '@/hooks/usePageTitle';
 import ToolHeroSection from '@/components/common/ToolHeroSection';
+import SEO from '@/components/SEO';
+import seoData from '@/data/seoData';
 
 const BloodPressureChecker = () => {
   usePageTitle('Blood Pressure Checker - Body Index');
 
   return (
     <Layout>
+      <SEO 
+        title={seoData.bloodPressureChecker.title}
+        description={seoData.bloodPressureChecker.description}
+        keywords={seoData.bloodPressureChecker.keywords}
+        structuredData={seoData.bloodPressureChecker.structuredData}
+        canonical="https://bodyindex.net/blood-pressure-checker"
+      />
       <div className="max-w-5xl mx-auto">
         <ToolHeroSection 
           title="Blood Pressure Checker"

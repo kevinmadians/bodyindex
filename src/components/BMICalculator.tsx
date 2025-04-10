@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { calculateBMI, getBMICategory, getBMICategoryColor, getHealthRisks, getRecommendations, getIdealWeightRange } from "@/lib/bmi-utils";
 import BMIResults from "@/components/BMIResults";
 import BMIChart from "@/components/BMIChart";
+import AnimatedResults from "@/components/common/AnimatedResults";
 
 const BMICalculator: React.FC = () => {
   const [unit, setUnit] = useState<'metric' | 'imperial'>('metric');
@@ -22,6 +22,11 @@ const BMICalculator: React.FC = () => {
   const [healthRisks, setHealthRisks] = useState<string>("");
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [idealWeightRange, setIdealWeightRange] = useState<{ min: number; max: number }>({ min: 0, max: 0 });
+
+  // Ensure the component scrolls to top when loaded
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // Min and max limits for inputs
   const limits = {
@@ -303,15 +308,17 @@ const BMICalculator: React.FC = () => {
       </Card>
       
       {/* BMI Results Component */}
-      <BMIResults 
-        bmi={bmi}
-        bmiCategory={bmiCategory}
-        categoryColor={categoryColor}
-        healthRisks={healthRisks}
-        recommendations={recommendations}
-        idealWeightRange={idealWeightRange}
-        unit={unit}
-      />
+      <AnimatedResults show={bmi > 0} disableAutoScroll={true}>
+        <BMIResults 
+          bmi={bmi}
+          bmiCategory={bmiCategory}
+          categoryColor={categoryColor}
+          healthRisks={healthRisks}
+          recommendations={recommendations}
+          idealWeightRange={idealWeightRange}
+          unit={unit}
+        />
+      </AnimatedResults>
       
       {/* BMI Chart/Visual Component */}
       <BMIChart 

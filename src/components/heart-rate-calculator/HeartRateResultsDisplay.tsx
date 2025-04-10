@@ -58,7 +58,7 @@ export const HeartRateResultsDisplay: React.FC<HeartRateResultsDisplayProps> = (
       {/* Key Metrics Card */}
       <Card className="shadow-md">
         <CardContent className="p-6">
-          <h3 className="text-xl font-semibold mb-4">Key Heart Rate Metrics</h3>
+          <h3 className="text-2xl font-bold mb-4">Key Heart Rate Metrics</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 bg-blue-50 rounded-lg">
               <div className="flex items-center gap-2 mb-2">
@@ -194,6 +194,20 @@ export const HeartRateResultsDisplay: React.FC<HeartRateResultsDisplayProps> = (
                     <li>Focus on Zone 4-5 training for speed and power</li>
                     <li>Include interval training with specific work:rest ratios</li>
                     <li>Maintain 1-2 long endurance sessions in Zone 2-3</li>
+                  </>
+                )}
+                {goals.includes('recovery') && (
+                  <>
+                    <li>Prioritize Zone 1 training (50-60% of max HR) for active recovery days</li>
+                    <li>Keep heart rate low during recovery sessions to promote healing</li>
+                    <li>Consider alternating hard training days with Zone 1 recovery days</li>
+                  </>
+                )}
+                {goals.includes('health') && (
+                  <>
+                    <li>Aim for a balanced approach across all heart rate zones</li>
+                    <li>Spend most training time in Zone 2 for cardiovascular health</li>
+                    <li>Include at least 150 minutes of moderate activity per week</li>
                   </>
                 )}
               </ul>

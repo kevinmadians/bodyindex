@@ -2,11 +2,14 @@ import React, { useState, useRef } from 'react';
 import Layout from '@/components/Layout';
 import CalculatorForm from '@/components/ideal-weight-calculator/CalculatorForm';
 import ResultsDisplay from '@/components/ideal-weight-calculator/ResultsDisplay';
+import AnimatedResults from '@/components/common/AnimatedResults';
 import { calculateIdealWeight } from '@/utils/idealWeightCalculations';
 import { Card, CardContent } from '@/components/ui/card';
 import usePageTitle from '@/hooks/usePageTitle';
 import ToolHeroSection from '@/components/common/ToolHeroSection';
 import { Scale, Heart, Award, ArrowDown, Activity } from 'lucide-react';
+import SEO from '@/components/SEO';
+import seoData from '@/data/seoData';
 
 const IdealWeightCalculator: React.FC = () => {
   usePageTitle('Ideal Weight Calculator - Body Index');
@@ -52,7 +55,14 @@ const IdealWeightCalculator: React.FC = () => {
 
   return (
     <Layout>
-      <div className="max-w-5xl mx-auto">
+      <SEO 
+        title={seoData.idealWeightCalculator.title}
+        description={seoData.idealWeightCalculator.description}
+        keywords={seoData.idealWeightCalculator.keywords}
+        structuredData={seoData.idealWeightCalculator.structuredData}
+        canonical="https://bodyindex.net/ideal-weight-calculator"
+      />
+      <div className="max-w-5xl mx-auto px-4">
         <ToolHeroSection 
           title="Ideal Weight Calculator"
           description="Discover your ideal weight range based on scientific formulas, body frame size, gender, and age."
@@ -74,8 +84,8 @@ const IdealWeightCalculator: React.FC = () => {
         </div>
 
         <div ref={resultsRef}>
-          {results && userData && (
-            <div className="animate-fade-in">
+          <AnimatedResults show={!!results && !!userData && !calculating}>
+            {results && userData && (
               <ResultsDisplay
                 results={results}
                 gender={userData.gender}
@@ -83,8 +93,8 @@ const IdealWeightCalculator: React.FC = () => {
                 height={userData.height}
                 bodyFrame={userData.bodyFrame}
               />
-            </div>
-          )}
+            )}
+          </AnimatedResults>
         </div>
 
         <Card className="mt-8 bg-muted/30 border-primary/20">

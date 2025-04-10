@@ -1,6 +1,8 @@
 import React from 'react';
 import Layout from '@/components/Layout';
 import usePageTitle from '@/hooks/usePageTitle';
+import SEO from '@/components/SEO';
+import seoData from '@/data/seoData';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,6 +19,12 @@ const Contact: React.FC = () => {
 
   return (
     <Layout>
+      <SEO 
+        title={seoData.contact.title}
+        description={seoData.contact.description}
+        keywords={seoData.contact.keywords}
+        canonical="https://bodyindex.net/contact"
+      />
       <div className="max-w-5xl mx-auto px-4">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-primary mb-4">Contact Us</h1>

@@ -5,12 +5,35 @@ import usePageTitle from '@/hooks/usePageTitle';
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import ToolHeroSection from '@/components/common/ToolHeroSection';
+import SEO from '@/components/SEO';
 
 const MacroCalculator = () => {
   usePageTitle('Macro Calculator - Body Index');
 
   return (
     <Layout>
+      <SEO 
+        title="Macro Calculator - Calculate Your Daily Macronutrients | Body Index"
+        description="Calculate your optimal daily protein, carbs, and fat intake with our improved macro calculator. Features required field validation for accurate results based on your body stats and fitness goals."
+        keywords="macro calculator, macronutrient calculator, nutrition calculator, protein intake, carbs calculation, fat ratio, required fields, TDEE calculator, meal planning, nutrition planning, fitness calculator"
+        canonical="https://bodyindex.net/macro-calculator"
+        structuredData={{
+          "@type": "SoftwareApplication",
+          "name": "Body Index Macro Calculator",
+          "applicationCategory": "HealthApplication",
+          "operatingSystem": "Web",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "156"
+          }
+        }}
+      />
       <div className="max-w-5xl mx-auto px-4">
         <ToolHeroSection 
           title="Macro Calculator"

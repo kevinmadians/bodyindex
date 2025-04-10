@@ -1,6 +1,8 @@
 import React from 'react';
 import Layout from '@/components/Layout';
 import usePageTitle from '@/hooks/usePageTitle';
+import SEO from '@/components/SEO';
+import seoData from '@/data/seoData';
 import { Card, CardContent } from "@/components/ui/card";
 
 const PrivacyPolicy = () => {
@@ -8,6 +10,12 @@ const PrivacyPolicy = () => {
 
   return (
     <Layout>
+      <SEO 
+        title={seoData.privacyPolicy.title}
+        description={seoData.privacyPolicy.description}
+        keywords={seoData.privacyPolicy.keywords}
+        canonical="https://bodyindex.net/privacy-policy"
+      />
       <div className="max-w-5xl mx-auto px-4">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-primary mb-4">Privacy Policy</h1>

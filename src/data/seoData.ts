@@ -29,7 +29,7 @@ const seoData: SEOData = {
   
   // BMI Calculator
   bmiCalculator: {
-    title: "BMI Calculator",
+    title: "BMI Calculator - Body Index",
     description: "Calculate your Body Mass Index (BMI) with our free, accurate BMI calculator. Understand what your results mean for your health with personalized insights.",
     keywords: "BMI calculator, body mass index calculator, calculate BMI, BMI chart, what is my BMI, healthy BMI range, weight category calculator, BMI interpretation, free BMI calculator",
     structuredData: {

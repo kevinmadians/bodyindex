@@ -77,7 +77,7 @@ export const calculateBMR = (
         const leanBodyMass = weight * (1 - (bodyFatPercentage / 100));
         bmr = 370 + (21.6 * leanBodyMass);
       } else {
-        // Fallback to Mifflin-St Jeor if body fat not provided
+        // If formula is katch but no body fat provided, use Mifflin-St Jeor instead
         if (gender === 'male') {
           bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
         } else {

@@ -1,10 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, AlertCircle } from "lucide-react";
+import { NumericInput } from "@/components/ui/NumericInput";
+
+// Safe default values for human measurements
+const SAFE_DEFAULTS = {
+  metric: {
+    age: 27, // years - average adult age
+    height: 170, // cm - average adult height
+    weight: 70, // kg - average adult weight
+    neck: 35, // cm - average neck circumference
+    waist: 80, // cm - average waist circumference
+    hip: 95, // cm - average hip circumference
+    triceps: 10, // mm
+    subscapular: 12, // mm
+    suprailiac: 15, // mm
+    thigh: 18, // mm
+  },
+  imperial: {
+    age: 27, // years
+    height: 67, // inches (5'7")
+    weight: 154, // pounds
+    neck: 14, // inches
+    waist: 31, // inches
+    hip: 37, // inches
+    triceps: 0.4, // inches
+    subscapular: 0.5, // inches
+    suprailiac: 0.6, // inches
+    thigh: 0.7, // inches
+  }
+};
 
 interface CalculatorFormProps {
   gender: string;
@@ -35,9 +63,13 @@ interface CalculatorFormProps {
   setSuprailiac: (value: number) => void;
   thigh: number;
   setThigh: (value: number) => void;
+  // Component state
+  isInitialized?: boolean;
+  // Results state
+  setShowResults: (show: boolean) => void;
 }
 
-const CalculatorForm: React.FC<CalculatorFormProps> = ({
+const CalculatorForm = ({
   gender,
   setGender,
   age,
@@ -64,8 +96,48 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   suprailiac,
   setSuprailiac,
   thigh,
-  setThigh
-}) => {
+  setThigh,
+  isInitialized,
+  setShowResults
+}: CalculatorFormProps) => {
+  // State for input errors
+  const [errors, setErrors] = useState<{
+    age?: string;
+    weight?: string;
+    height?: string;
+    neck?: string;
+    waist?: string;
+    hip?: string;
+    triceps?: string;
+    subscapular?: string;
+    suprailiac?: string;
+    thigh?: string;
+  }>({});
+
+  // Force check for invalid values and reset them to safe defaults only on init
+  useEffect(() => {
+    // Only apply default values on first render, not when users are editing
+    if (!isInitialized) {
+      // Check if height is outside normal range and reset it
+      const safeHeight = SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].height;
+      if (height < 50 || height > 300) {
+        setHeight(safeHeight);
+      }
+      
+      // Reset neck if abnormal
+      const safeNeck = SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].neck;
+      if (neck < 10 || neck > 100) {
+        setNeck(safeNeck);
+      }
+      
+      // Reset waist if abnormal
+      const safeWaist = SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].waist;
+      if (waist < 40 || waist > 250) {
+        setWaist(safeWaist);
+      }
+    }
+  }, [isInitialized, measurementUnit]);
+
   // Method descriptions for tooltips
   const methodDescriptions = {
     navy: "The Navy Method uses circumference measurements to estimate body fat. It's widely used by the US Navy and is considered accurate for most people.",
@@ -76,6 +148,172 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   // Handle measurement method change
   const handleMethodChange = (method: string) => {
     setMeasurementMethod(method);
+    // Hide results when method changes
+    setShowResults(false);
+    // Clear errors when changing method
+    setErrors({});
+  };
+
+  // Handle measurement unit change
+  const handleUnitChange = (unit: string) => {
+    setMeasurementUnit(unit);
+    // Hide results when unit changes
+    setShowResults(false);
+    // Don't automatically override user-entered values
+  };
+
+  // Directly set a safe value for height input
+  const getSafeHeight = () => {
+    // Return the current height value without overriding
+    return height.toString();
+  };
+
+  // Directly set a safe value for neck input
+  const getSafeNeck = () => {
+    // Return the current neck value without overriding
+    return neck.toString();
+  };
+
+  // Directly set a safe value for waist input
+  const getSafeWaist = () => {
+    // Return the current waist value without overriding
+    return waist.toString();
+  };
+
+  // Validate inputs before calculation
+  const validateInputs = () => {
+    const newErrors: typeof errors = {};
+    
+    // Age validation
+    if (age < 15 || age > 100) {
+      newErrors.age = 'Age should be between 15-100 years for accurate results';
+    }
+    
+    // Weight validation
+    if (measurementUnit === 'metric') {
+      if (weight < 30 || weight > 250) {
+        newErrors.weight = 'Weight should be between 30-250 kg for accurate results';
+      }
+    } else {
+      if (weight < 66 || weight > 550) {
+        newErrors.weight = 'Weight should be between 66-550 lbs for accurate results';
+      }
+    }
+    
+    // Height validation
+    if (measurementUnit === 'metric') {
+      if (height < 100 || height > 250) {
+        newErrors.height = 'Height should be between 100-250 cm for accurate results';
+      }
+    } else {
+      if (height < 39 || height > 98) {
+        newErrors.height = 'Height should be between 39-98 inches for accurate results';
+      }
+    }
+    
+    // Navy method specific validations
+    if (measurementMethod === 'navy') {
+      // Neck validation
+      if (measurementUnit === 'metric') {
+        if (neck < 20 || neck > 60) {
+          newErrors.neck = 'Neck should be between 20-60 cm';
+        }
+      } else {
+        if (neck < 8 || neck > 24) {
+          newErrors.neck = 'Neck should be between 8-24 inches';
+        }
+      }
+      
+      // Waist validation
+      if (measurementUnit === 'metric') {
+        if (waist < 50 || waist > 200) {
+          newErrors.waist = 'Waist should be between 50-200 cm';
+        }
+      } else {
+        if (waist < 20 || waist > 80) {
+          newErrors.waist = 'Waist should be between 20-80 inches';
+        }
+      }
+      
+      // Hip validation (only for women)
+      if (gender === 'female') {
+        if (measurementUnit === 'metric') {
+          if (hip < 50 || hip > 200) {
+            newErrors.hip = 'Hip should be between 50-200 cm';
+          }
+        } else {
+          if (hip < 20 || hip > 80) {
+            newErrors.hip = 'Hip should be between 20-80 inches';
+          }
+        }
+      }
+    }
+    
+    // Skinfold method specific validations
+    if (measurementMethod === 'skinfold') {
+      // Triceps skinfold validation
+      if (measurementUnit === 'metric') {
+        if (triceps < 2 || triceps > 100) {
+          newErrors.triceps = 'Triceps skinfold should be between 2-100 mm';
+        }
+      } else {
+        if (triceps < 0.08 || triceps > 4) {
+          newErrors.triceps = 'Triceps skinfold should be between 0.08-4 inches';
+        }
+      }
+      
+      // Subscapular skinfold validation
+      if (measurementUnit === 'metric') {
+        if (subscapular < 2 || subscapular > 100) {
+          newErrors.subscapular = 'Subscapular skinfold should be between 2-100 mm';
+        }
+      } else {
+        if (subscapular < 0.08 || subscapular > 4) {
+          newErrors.subscapular = 'Subscapular skinfold should be between 0.08-4 inches';
+        }
+      }
+      
+      // Suprailiac skinfold validation
+      if (measurementUnit === 'metric') {
+        if (suprailiac < 2 || suprailiac > 100) {
+          newErrors.suprailiac = 'Suprailiac skinfold should be between 2-100 mm';
+        }
+      } else {
+        if (suprailiac < 0.08 || suprailiac > 4) {
+          newErrors.suprailiac = 'Suprailiac skinfold should be between 0.08-4 inches';
+        }
+      }
+      
+      // Thigh skinfold validation (only for women)
+      if (gender === 'female') {
+        if (measurementUnit === 'metric') {
+          if (thigh < 2 || thigh > 100) {
+            newErrors.thigh = 'Thigh skinfold should be between 2-100 mm';
+          }
+        } else {
+          if (thigh < 0.08 || thigh > 4) {
+            newErrors.thigh = 'Thigh skinfold should be between 0.08-4 inches';
+          }
+        }
+      }
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Handle form submission
+  const handleCalculate = () => {
+    if (validateInputs()) {
+      calculateResults();
+    }
+  };
+
+  // Handle gender change
+  const handleGenderChange = (value: string) => {
+    setGender(value);
+    // Hide results when gender changes
+    setShowResults(false);
   };
 
   return (
@@ -144,7 +382,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <div>
           <div className="mb-6">
             <h3 className="text-lg font-medium mb-4">Gender</h3>
-            <RadioGroup value={gender} onValueChange={setGender} className="flex space-x-4">
+            <RadioGroup value={gender} onValueChange={handleGenderChange} className="flex space-x-4">
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="male" id="male" className="text-primary" />
                 <Label htmlFor="male">Male</Label>
@@ -158,26 +396,52 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 
           <div className="mb-6">
             <Label htmlFor="age" className="block mb-2">Age</Label>
-            <Input
+            <NumericInput
               id="age"
-              type="number"
-              value={age}
-              onChange={(e) => setAge(parseInt(e.target.value) || 0)}
-              className="bg-gray-50 border-gray-200"
+              value={age.toString()}
+              onValueChange={(value) => {
+                setAge(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].age);
+                setErrors({...errors, age: undefined});
+                // Hide results when input changes
+                setShowResults(false);
+              }}
+              min={15}
+              max={100}
+              className={`bg-gray-50 border-gray-200 ${errors.age ? 'border-red-500' : ''}`}
             />
+            {errors.age && (
+              <div className="flex items-center text-xs text-red-500 mt-1">
+                <AlertCircle className="h-3 w-3 mr-1" />
+                {errors.age}
+              </div>
+            )}
+            <div className="text-xs text-muted-foreground mt-1">Recommended range: 15-100 years</div>
           </div>
 
           <div className="mb-6">
             <Label htmlFor="weight" className="block mb-2">
               Weight ({measurementUnit === 'metric' ? 'kg' : 'lbs'})
             </Label>
-            <Input
+            <NumericInput
               id="weight"
-              type="number"
-              value={weight}
-              onChange={(e) => setWeight(parseInt(e.target.value) || 0)}
-              className="bg-gray-50 border-gray-200"
+              value={weight.toString()}
+              onValueChange={(value) => {
+                setWeight(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].weight);
+                setErrors({...errors, weight: undefined});
+              }}
+              min={measurementUnit === 'metric' ? 30 : 66}
+              max={measurementUnit === 'metric' ? 250 : 550}
+              className={`bg-gray-50 border-gray-200 ${errors.weight ? 'border-red-500' : ''}`}
             />
+            {errors.weight && (
+              <div className="flex items-center text-xs text-red-500 mt-1">
+                <AlertCircle className="h-3 w-3 mr-1" />
+                {errors.weight}
+              </div>
+            )}
+            <div className="text-xs text-muted-foreground mt-1">
+              Recommended range: {measurementUnit === 'metric' ? '30-250 kg' : '66-550 lbs'}
+            </div>
           </div>
 
           {measurementMethod === 'navy' && (
@@ -195,13 +459,26 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </Label>
-              <Input
+              <NumericInput
                 id="waist"
-                type="number"
-                value={waist}
-                onChange={(e) => setWaist(parseInt(e.target.value) || 0)}
-                className="bg-gray-50 border-gray-200"
+                value={getSafeWaist()}
+                onValueChange={(value) => {
+                  setWaist(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].waist);
+                  setErrors({...errors, waist: undefined});
+                }}
+                min={measurementUnit === 'metric' ? 50 : 20}
+                max={measurementUnit === 'metric' ? 200 : 80}
+                className={`bg-gray-50 border-gray-200 ${errors.waist ? 'border-red-500' : ''}`}
               />
+              {errors.waist && (
+                <div className="flex items-center text-xs text-red-500 mt-1">
+                  <AlertCircle className="h-3 w-3 mr-1" />
+                  {errors.waist}
+                </div>
+              )}
+              <div className="text-xs text-muted-foreground mt-1">
+                Recommended range: {measurementUnit === 'metric' ? '50-200 cm' : '20-80 inches'}
+              </div>
             </div>
           )}
 
@@ -221,13 +498,26 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                     </Tooltip>
                   </TooltipProvider>
                 </Label>
-                <Input
+                <NumericInput
                   id="triceps"
-                  type="number"
-                  value={triceps}
-                  onChange={(e) => setTriceps(parseInt(e.target.value) || 0)}
-                  className="bg-gray-50 border-gray-200"
+                  value={triceps.toString()}
+                  onValueChange={(value) => {
+                    setTriceps(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].triceps);
+                    setErrors({...errors, triceps: undefined});
+                  }}
+                  min={measurementUnit === 'metric' ? 2 : 0.08}
+                  max={measurementUnit === 'metric' ? 100 : 4}
+                  className={`bg-gray-50 border-gray-200 ${errors.triceps ? 'border-red-500' : ''}`}
                 />
+                {errors.triceps && (
+                  <div className="flex items-center text-xs text-red-500 mt-1">
+                    <AlertCircle className="h-3 w-3 mr-1" />
+                    {errors.triceps}
+                  </div>
+                )}
+                <div className="text-xs text-muted-foreground mt-1">
+                  Recommended range: {measurementUnit === 'metric' ? '2-100 mm' : '0.08-4 inches'}
+                </div>
               </div>
 
               <div className="mb-6">
@@ -244,13 +534,26 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                     </Tooltip>
                   </TooltipProvider>
                 </Label>
-                <Input
+                <NumericInput
                   id="subscapular"
-                  type="number"
-                  value={subscapular}
-                  onChange={(e) => setSubscapular(parseInt(e.target.value) || 0)}
-                  className="bg-gray-50 border-gray-200"
+                  value={subscapular.toString()}
+                  onValueChange={(value) => {
+                    setSubscapular(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].subscapular);
+                    setErrors({...errors, subscapular: undefined});
+                  }}
+                  min={measurementUnit === 'metric' ? 2 : 0.08}
+                  max={measurementUnit === 'metric' ? 100 : 4}
+                  className={`bg-gray-50 border-gray-200 ${errors.subscapular ? 'border-red-500' : ''}`}
                 />
+                {errors.subscapular && (
+                  <div className="flex items-center text-xs text-red-500 mt-1">
+                    <AlertCircle className="h-3 w-3 mr-1" />
+                    {errors.subscapular}
+                  </div>
+                )}
+                <div className="text-xs text-muted-foreground mt-1">
+                  Recommended range: {measurementUnit === 'metric' ? '2-100 mm' : '0.08-4 inches'}
+                </div>
               </div>
             </>
           )}
@@ -259,7 +562,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <div>
           <div className="mb-6">
             <h3 className="text-lg font-medium mb-4">Measurement System</h3>
-            <RadioGroup value={measurementUnit} onValueChange={setMeasurementUnit} className="flex space-x-4">
+            <RadioGroup value={measurementUnit} onValueChange={handleUnitChange} className="flex space-x-4">
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="metric" id="metric" className="text-primary" />
                 <Label htmlFor="metric">Metric (cm, kg, mm)</Label>
@@ -275,13 +578,28 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <Label htmlFor="height" className="block mb-2">
               Height ({measurementUnit === 'metric' ? 'cm' : 'inches'})
             </Label>
-            <Input
+            <NumericInput
               id="height"
-              type="number"
-              value={height}
-              onChange={(e) => setHeight(parseInt(e.target.value) || 0)}
-              className="bg-gray-50 border-gray-200"
+              value={getSafeHeight()}
+              onValueChange={(value) => {
+                setHeight(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].height);
+                setErrors({...errors, height: undefined});
+                // Hide results when input changes
+                setShowResults(false);
+              }}
+              min={measurementUnit === 'metric' ? 100 : 39}
+              max={measurementUnit === 'metric' ? 250 : 98}
+              className={`bg-gray-50 border-gray-200 ${errors.height ? 'border-red-500' : ''}`}
             />
+            {errors.height && (
+              <div className="flex items-center text-xs text-red-500 mt-1">
+                <AlertCircle className="h-3 w-3 mr-1" />
+                {errors.height}
+              </div>
+            )}
+            <div className="text-xs text-muted-foreground mt-1">
+              Recommended range: {measurementUnit === 'metric' ? '100-250 cm' : '39-98 inches'}
+            </div>
           </div>
 
           {measurementMethod === 'navy' && (
@@ -299,13 +617,26 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </Label>
-              <Input
+              <NumericInput
                 id="neck"
-                type="number"
-                value={neck}
-                onChange={(e) => setNeck(parseInt(e.target.value) || 0)}
-                className="bg-gray-50 border-gray-200"
+                value={getSafeNeck()}
+                onValueChange={(value) => {
+                  setNeck(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].neck);
+                  setErrors({...errors, neck: undefined});
+                }}
+                min={measurementUnit === 'metric' ? 20 : 8}
+                max={measurementUnit === 'metric' ? 60 : 24}
+                className={`bg-gray-50 border-gray-200 ${errors.neck ? 'border-red-500' : ''}`}
               />
+              {errors.neck && (
+                <div className="flex items-center text-xs text-red-500 mt-1">
+                  <AlertCircle className="h-3 w-3 mr-1" />
+                  {errors.neck}
+                </div>
+              )}
+              <div className="text-xs text-muted-foreground mt-1">
+                Recommended range: {measurementUnit === 'metric' ? '20-60 cm' : '8-24 inches'}
+              </div>
             </div>
           )}
 
@@ -324,13 +655,26 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                   </Tooltip>
                 </TooltipProvider>
               </Label>
-              <Input
+              <NumericInput
                 id="hip"
-                type="number"
-                value={hip}
-                onChange={(e) => setHip(parseInt(e.target.value) || 0)}
-                className="bg-gray-50 border-gray-200"
+                value={hip.toString()}
+                onValueChange={(value) => {
+                  setHip(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].hip);
+                  setErrors({...errors, hip: undefined});
+                }}
+                min={measurementUnit === 'metric' ? 50 : 20}
+                max={measurementUnit === 'metric' ? 200 : 80}
+                className={`bg-gray-50 border-gray-200 ${errors.hip ? 'border-red-500' : ''}`}
               />
+              {errors.hip && (
+                <div className="flex items-center text-xs text-red-500 mt-1">
+                  <AlertCircle className="h-3 w-3 mr-1" />
+                  {errors.hip}
+                </div>
+              )}
+              <div className="text-xs text-muted-foreground mt-1">
+                Recommended range: {measurementUnit === 'metric' ? '50-200 cm' : '20-80 inches'}
+              </div>
             </div>
           )}
 
@@ -350,13 +694,26 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                     </Tooltip>
                   </TooltipProvider>
                 </Label>
-                <Input
+                <NumericInput
                   id="suprailiac"
-                  type="number"
-                  value={suprailiac}
-                  onChange={(e) => setSuprailiac(parseInt(e.target.value) || 0)}
-                  className="bg-gray-50 border-gray-200"
+                  value={suprailiac.toString()}
+                  onValueChange={(value) => {
+                    setSuprailiac(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].suprailiac);
+                    setErrors({...errors, suprailiac: undefined});
+                  }}
+                  min={measurementUnit === 'metric' ? 2 : 0.08}
+                  max={measurementUnit === 'metric' ? 100 : 4}
+                  className={`bg-gray-50 border-gray-200 ${errors.suprailiac ? 'border-red-500' : ''}`}
                 />
+                {errors.suprailiac && (
+                  <div className="flex items-center text-xs text-red-500 mt-1">
+                    <AlertCircle className="h-3 w-3 mr-1" />
+                    {errors.suprailiac}
+                  </div>
+                )}
+                <div className="text-xs text-muted-foreground mt-1">
+                  Recommended range: {measurementUnit === 'metric' ? '2-100 mm' : '0.08-4 inches'}
+                </div>
               </div>
 
               {gender === 'female' && (
@@ -374,13 +731,26 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                       </Tooltip>
                     </TooltipProvider>
                   </Label>
-                  <Input
+                  <NumericInput
                     id="thigh"
-                    type="number"
-                    value={thigh}
-                    onChange={(e) => setThigh(parseInt(e.target.value) || 0)}
-                    className="bg-gray-50 border-gray-200"
+                    value={thigh.toString()}
+                    onValueChange={(value) => {
+                      setThigh(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].thigh);
+                      setErrors({...errors, thigh: undefined});
+                    }}
+                    min={measurementUnit === 'metric' ? 2 : 0.08}
+                    max={measurementUnit === 'metric' ? 100 : 4}
+                    className={`bg-gray-50 border-gray-200 ${errors.thigh ? 'border-red-500' : ''}`}
                   />
+                  {errors.thigh && (
+                    <div className="flex items-center text-xs text-red-500 mt-1">
+                      <AlertCircle className="h-3 w-3 mr-1" />
+                      {errors.thigh}
+                    </div>
+                  )}
+                  <div className="text-xs text-muted-foreground mt-1">
+                    Recommended range: {measurementUnit === 'metric' ? '2-100 mm' : '0.08-4 inches'}
+                  </div>
                 </div>
               )}
             </>
@@ -390,7 +760,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 
       <div className="mt-4">
         <Button 
-          onClick={calculateResults} 
+          onClick={handleCalculate}
           className="w-full bg-primary hover:bg-primary/90 text-white"
         >
           Calculate Body Fat

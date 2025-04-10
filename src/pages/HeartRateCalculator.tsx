@@ -5,16 +5,25 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Activity, Heart, Zap, Target, TrendingUp } from 'lucide-react';
 import usePageTitle from '@/hooks/usePageTitle';
 import ToolHeroSection from '@/components/common/ToolHeroSection';
+import SEO from '@/components/SEO';
+import seoData from '@/data/seoData';
 
 const HeartRateCalculator = () => {
-  usePageTitle('Heart Rate Zone Calculator - Body Index');
+  usePageTitle('Heart Rate Calculator - Body Index');
 
   return (
     <Layout>
-      <div className="max-w-5xl mx-auto">
+      <SEO 
+        title={seoData.heartRateCalculator.title}
+        description={seoData.heartRateCalculator.description}
+        keywords={seoData.heartRateCalculator.keywords}
+        structuredData={seoData.heartRateCalculator.structuredData}
+        canonical="https://bodyindex.net/heart-rate-calculator"
+      />
+      <div className="max-w-5xl mx-auto px-4">
         <ToolHeroSection 
-          title="Heart Rate Zone Calculator" 
-          description="Calculate your personalized heart rate zones for optimal training and cardiovascular health."
+          title="Heart Rate Calculator"
+          description="Calculate your maximum heart rate and target heart rate zones for different training intensities"
         />
         
         <HRCalc />

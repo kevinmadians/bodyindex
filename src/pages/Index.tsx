@@ -4,6 +4,8 @@ import BMICalculator from '@/components/BMICalculator';
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import usePageTitle from '@/hooks/usePageTitle';
+import SEO from '@/components/SEO';
+import seoData from '@/data/seoData';
 // import ToolHeroSection from '@/components/common/ToolHeroSection';
 
 const Index = () => {
@@ -11,6 +13,14 @@ const Index = () => {
 
   return (
     <Layout>
+      <SEO 
+        title={seoData.bmiCalculator.title}
+        description={seoData.bmiCalculator.description}
+        keywords={seoData.bmiCalculator.keywords}
+        canonical="https://bodyindex.net/bmi-calculator"
+        structuredData={seoData.bmiCalculator.structuredData}
+      />
+      
       <div className="max-w-5xl mx-auto">
         {/* Direct implementation of hero section with enhanced styling */}
         <div className="mb-10 text-center">

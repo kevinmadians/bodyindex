@@ -45,10 +45,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 }) => {
   // Format names for display
   const formulaNames = {
-    'harris': 'Harris-Benedict',
     'mifflin': 'Mifflin-St Jeor',
-    'katch': 'Katch-McArdle',
-    'cunningham': 'Cunningham'
+    'harris': 'Harris-Benedict',
+    'katch': 'Katch-McArdle'
   };
 
   const activityNames = {
@@ -88,6 +87,17 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     { name: 'HIIT (15 min)', calories: Math.round(10.0 * (measurementUnit === 'metric' ? weight : weight / 2.20462) * 0.25) }
   ];
 
+  // Get the actual formula used for calculation
+  const getDisplayFormula = () => {
+    if (formula === 'katch' && !includeBodyFat) {
+      return 'mifflin'; // If Katch selected but body fat not included, Mifflin was used
+    }
+    return formula;
+  };
+
+  // Display logic
+  const displayFormula = getDisplayFormula();
+
   return (
     <div id="results-section" className="space-y-6 animate-fade-in">
       <Card className="shadow-md">
@@ -95,8 +105,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Your Results</h2>
             <div className="flex items-center text-sm text-muted-foreground">
-              <span>Formula: {formulaNames[formula as keyof typeof formulaNames] || 'Mifflin-St Jeor'}</span>
-              {includeBodyFat && <span className="ml-2 px-2 py-0.5 bg-primary/10 rounded-full text-primary text-xs">Body Fat Included</span>}
+              <span>Formula: {formulaNames[displayFormula as keyof typeof formulaNames] || 'Mifflin-St Jeor'}</span>
+              {includeBodyFat && formula === 'katch' && <span className="ml-2 px-2 py-0.5 bg-primary/10 rounded-full text-primary text-xs">Body Fat Included</span>}
             </div>
           </div>
           
@@ -139,11 +149,28 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           </div>
           
           <Tabs defaultValue="macros" className="mt-8">
-            <TabsList className="grid w-full grid-cols-3 mb-6">
-              <TabsTrigger value="macros">Macro Breakdown</TabsTrigger>
-              <TabsTrigger value="charts">Analysis</TabsTrigger>
-              <TabsTrigger value="activity">Activity Calories</TabsTrigger>
-            </TabsList>
+            <div className="flex justify-center mb-6">
+              <TabsList className="bg-gray-100 p-1 rounded-md">
+                <TabsTrigger 
+                  value="macros" 
+                  className="px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-white rounded-md"
+                >
+                  Macro Breakdown
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="charts"
+                  className="px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-white rounded-md"
+                >
+                  Analysis
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="activity"
+                  className="px-4 py-2 data-[state=active]:bg-primary data-[state=active]:text-white rounded-md"
+                >
+                  Activity Calories
+                </TabsTrigger>
+              </TabsList>
+            </div>
             
             <TabsContent value="macros" className="space-y-6">
               <div className="text-center mb-4">
@@ -256,30 +283,62 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             
             <TabsContent value="activity">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold mb-1">Calories Burned By Activities</h3>
+                <h3 className="text-lg font-bold">Calories Burned By Activities</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   These estimates show how many calories you might burn during different activities
                   based on your weight of {weight} {measurementUnit === 'metric' ? 'kg' : 'lbs'}.
                 </p>
                 
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
+                {/* Centered chart container with custom padding to offset the asymmetry */}
+                <div className="h-[300px] sm:h-[380px] flex justify-center -ml-3 sm:ml-0">
+                  <ResponsiveContainer width="95%" height="100%">
                     <BarChart
                       data={activityData}
                       layout="vertical"
-                      margin={{ top: 5, right: 30, left: 150, bottom: 5 }}
+                      margin={{ top: 5, right: 25, left: 55, bottom: 5 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
-                      <XAxis type="number" />
-                      <YAxis dataKey="name" type="category" width={150} />
+                      <XAxis 
+                        type="number" 
+                        domain={[0, 'dataMax + 20']} 
+                        tickCount={5}
+                        fontSize={12}
+                      />
+                      <YAxis 
+                        dataKey="name" 
+                        type="category" 
+                        width={55} 
+                        tick={{ fontSize: 12 }}
+                        tickMargin={2}
+                        tickFormatter={(value) => {
+                          // Shorten activity names for mobile view
+                          return value
+                            .replace('(30 min)', '')
+                            .replace('Training', 'Train.')
+                            .replace('(15 min)', '');
+                        }}
+                      />
                       <Tooltip formatter={(value) => [`${value} calories`, 'Calories Burned']} />
-                      <Bar dataKey="calories" fill="#8884d8">
+                      <Bar dataKey="calories" fill="#8884d8" barSize={18}>
                         {activityData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#4CAF50' : '#2196F3'} />
                         ))}
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
+                </div>
+                
+                {/* Activities list styled like in the screenshot */}
+                <div className="mt-4">
+                  <h4 className="font-medium mb-2">Activities:</h4>
+                  <div className="space-y-1">
+                    {activityData.map((activity, index) => (
+                      <div key={index} className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">{activity.name}</span>
+                        <span className="font-medium">{activity.calories} cal</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 mt-4">

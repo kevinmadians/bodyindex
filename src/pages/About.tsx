@@ -1,14 +1,22 @@
 import React from 'react';
 import Layout from '@/components/Layout';
 import usePageTitle from '@/hooks/usePageTitle';
+import SEO from '@/components/SEO';
+import seoData from '@/data/seoData';
 import { Card, CardContent } from "@/components/ui/card";
 
 const About = () => {
-  usePageTitle('About Us - Body Index');
+  usePageTitle('About - Body Index');
 
   return (
     <Layout>
-      <div className="max-w-5xl mx-auto px-4">
+      <SEO 
+        title={seoData.about.title}
+        description={seoData.about.description}
+        keywords={seoData.about.keywords}
+        canonical="https://bodyindex.net/about"
+      />
+      <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-primary mb-4">About Body Index</h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">

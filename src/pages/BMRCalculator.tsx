@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import CalculatorForm from '@/components/bmr-calculator/CalculatorForm';
 import ResultsDisplay from '@/components/bmr-calculator/ResultsDisplay';
+import AnimatedResults from '@/components/common/AnimatedResults';
 import { 
   calculateBMR, 
   calculateTDEE, 
@@ -12,6 +13,8 @@ import {
 } from '@/utils/bmrCalculations';
 import usePageTitle from '@/hooks/usePageTitle';
 import ToolHeroSection from '@/components/common/ToolHeroSection';
+import SEO from '@/components/SEO';
+import seoData from '@/data/seoData';
 
 const BMRCalculator: React.FC = () => {
   usePageTitle('BMR Calculator - Body Index');
@@ -78,13 +81,19 @@ const BMRCalculator: React.FC = () => {
       heightInCm = ((heightFt * 12) + heightIn) * 2.54; // inches to cm
     }
     
+    // If Katch-McArdle is selected but body fat is not included, switch to Mifflin-St Jeor
+    let calculationFormula = formula;
+    if (formula === 'katch' && !includeBodyFat) {
+      calculationFormula = 'mifflin';
+    }
+    
     // Calculate BMR
     const calculatedBMR = calculateBMR(
       gender, 
       age, 
       weightInKg, 
       heightInCm, 
-      formula,
+      calculationFormula,
       includeBodyFat ? bodyFatPercentage : undefined
     );
     
@@ -119,17 +128,30 @@ const BMRCalculator: React.FC = () => {
     setTimeout(() => {
       const resultsElement = document.getElementById('results-section');
       if (resultsElement) {
-        resultsElement.scrollIntoView({ behavior: 'smooth' });
+        const yOffset = -80; // Offset to ensure the "Your Results" heading is visible
+        const y = resultsElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        
+        window.scrollTo({
+          top: y,
+          behavior: 'smooth'
+        });
       }
-    }, 100);
+    }, 300); // Increased delay to ensure content is rendered
   };
 
   return (
     <Layout>
-      <div className="max-w-5xl mx-auto">
+      <SEO 
+        title={seoData.bmrCalculator.title}
+        description={seoData.bmrCalculator.description}
+        keywords={seoData.bmrCalculator.keywords}
+        structuredData={seoData.bmrCalculator.structuredData}
+        canonical="https://bodyindex.net/bmr-calculator"
+      />
+      <div className="max-w-5xl mx-auto px-4">
         <ToolHeroSection 
-          title="Basal Metabolic Rate Calculator"
-          description="Calculate your BMR, TDEE, and get personalized nutrition recommendations."
+          title="BMR Calculator"
+          description="Calculate your Basal Metabolic Rate (BMR) and Total Daily Energy Expenditure (TDEE)"
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
@@ -164,22 +186,26 @@ const BMRCalculator: React.FC = () => {
           </div>
           
           <div className="lg:col-span-2" id="results-section">
-            {showResults ? (
-              <ResultsDisplay
-                bmr={bmr}
-                tdee={tdee}
-                targetCalories={targetCalories}
-                macros={macros}
-                activityLevel={activityLevel}
-                goal={goal}
-                formula={formula}
-                macroSuggestion={macroSuggestion}
-                gender={gender}
-                weight={weight}
-                measurementUnit={measurementUnit}
-                includeBodyFat={includeBodyFat}
-              />
-            ) : (
+            <AnimatedResults show={showResults} disableAutoScroll={true}>
+              {showResults && (
+                <ResultsDisplay
+                  bmr={bmr}
+                  tdee={tdee}
+                  targetCalories={targetCalories}
+                  macros={macros}
+                  activityLevel={activityLevel}
+                  goal={goal}
+                  formula={formula}
+                  macroSuggestion={macroSuggestion}
+                  gender={gender}
+                  weight={weight}
+                  measurementUnit={measurementUnit}
+                  includeBodyFat={includeBodyFat}
+                />
+              )}
+            </AnimatedResults>
+            
+            {!showResults && (
               <div className="bg-white rounded-lg shadow-md p-6">
                 <div className="flex flex-col items-center justify-center py-12">
                   <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mb-6">
@@ -192,21 +218,29 @@ const BMRCalculator: React.FC = () => {
                     Fill out the form to calculate your Basal Metabolic Rate, Total Daily Energy Expenditure, and get personalized nutrition recommendations.
                   </p>
                   <div className="space-y-4 w-full max-w-md text-sm">
-                    <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                      <span>Choose your measurement system</span>
-                      <span className="font-medium">Imperial or Metric</span>
+                    <div className="flex items-center p-3 border rounded-lg">
+                      <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-blue-500 text-sm font-semibold">1</span>
+                      </div>
+                      <div>
+                        <p>Enter your physical details</p>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                      <span>Enter your personal details</span>
-                      <span className="font-medium">Age, Gender, Height, Weight</span>
+                    <div className="flex items-center p-3 border rounded-lg">
+                      <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-green-500 text-sm font-semibold">2</span>
+                      </div>
+                      <div>
+                        <p>Select activity level and goals</p>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                      <span>Select activity level & goal</span>
-                      <span className="font-medium">Based on your lifestyle</span>
-                    </div>
-                    <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                      <span>Get personalized results</span>
-                      <span className="font-medium">BMR, TDEE, Macros</span>
+                    <div className="flex items-center p-3 border rounded-lg">
+                      <div className="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-purple-500 text-sm font-semibold">3</span>
+                      </div>
+                      <div>
+                        <p>Get personalized calorie and macro recommendations</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -243,14 +277,66 @@ const BMRCalculator: React.FC = () => {
               </div>
               
               <h3 className="text-xl font-semibold mt-6 mb-3">Factors That Affect BMR</h3>
-              <ul className="list-disc pl-6 space-y-1 mb-4">
-                <li><span className="font-medium">Age:</span> BMR decreases by about 2% per decade after age 20</li>
-                <li><span className="font-medium">Gender:</span> Men typically have higher BMRs than women</li>
-                <li><span className="font-medium">Body Composition:</span> More muscle mass means higher BMR</li>
-                <li><span className="font-medium">Height and Weight:</span> Larger bodies need more energy</li>
-                <li><span className="font-medium">Hormones:</span> Thyroid function and other hormonal factors</li>
-                <li><span className="font-medium">Genetics:</span> Some people naturally have faster metabolisms</li>
-              </ul>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h4 className="font-bold mb-2">Body Composition</h4>
+                  <p className="text-sm text-gray-700">
+                    Muscle tissue burns more calories than fat tissue, even at rest. Higher muscle mass increases BMR.
+                  </p>
+                </div>
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h4 className="font-bold mb-2">Age</h4>
+                  <p className="text-sm text-gray-700">
+                    BMR typically decreases with age due to the natural loss of muscle mass and hormonal changes.
+                  </p>
+                </div>
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h4 className="font-bold mb-2">Gender</h4>
+                  <p className="text-sm text-gray-700">
+                    Men generally have higher BMRs than women due to higher muscle mass and testosterone levels.
+                  </p>
+                </div>
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h4 className="font-bold mb-2">Genetics and Health</h4>
+                  <p className="text-sm text-gray-700">
+                    Genetics, thyroid health, and other medical factors can influence your baseline metabolic rate.
+                  </p>
+                </div>
+              </div>
+              
+              <h3 className="text-xl font-semibold mt-6 mb-3">BMR Calculation Methods</h3>
+              <div className="space-y-4">
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h4 className="font-bold mb-2">Mifflin-St Jeor Equation</h4>
+                  <p className="text-sm text-gray-700">
+                    Published in 1990, this is currently considered the most accurate formula for the general population. It accounts for weight, height, age, and gender.
+                  </p>
+                  <p className="text-xs text-blue-600 mt-1">
+                    Male: 10 × weight(kg) + 6.25 × height(cm) - 5 × age(y) + 5<br />
+                    Female: 10 × weight(kg) + 6.25 × height(cm) - 5 × age(y) - 161
+                  </p>
+                </div>
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h4 className="font-bold mb-2">Harris-Benedict Equation</h4>
+                  <p className="text-sm text-gray-700">
+                    This classic formula was developed in 1919 and revised in 1984. It's slightly less accurate for modern populations but still widely used.
+                  </p>
+                  <p className="text-xs text-blue-600 mt-1">
+                    Male: 88.362 + (13.397 × weight in kg) + (4.799 × height in cm) - (5.677 × age in years)<br />
+                    Female: 447.593 + (9.247 × weight in kg) + (3.098 × height in cm) - (4.330 × age in years)
+                  </p>
+                </div>
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h4 className="font-bold mb-2">Katch-McArdle Formula</h4>
+                  <p className="text-sm text-gray-700">
+                    This formula includes body fat percentage for greater accuracy. It's ideal for those with an athletic build or who know their body composition.
+                  </p>
+                  <p className="text-xs text-blue-600 mt-1">
+                    BMR = 370 + (21.6 × Lean Body Mass in kg)<br />
+                    Where Lean Body Mass = Weight × (1 - (Body Fat % / 100))
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           

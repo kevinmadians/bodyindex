@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { format, addMinutes, setHours, setMinutes, parseISO } from 'date-fns';
 import Layout from '@/components/Layout';
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,6 +23,8 @@ import SleepCycleChart from '@/components/sleep/SleepCycleChart';
 import SleepQualityGauge from '@/components/sleep/SleepQualityGauge';
 import usePageTitle from '@/hooks/usePageTitle';
 import ToolHeroSection from '@/components/common/ToolHeroSection';
+import SEO from '@/components/SEO';
+import seoData from '@/data/seoData';
 
 const SleepCalculator = () => {
   usePageTitle('Sleep Calculator - Body Index');
@@ -33,6 +35,8 @@ const SleepCalculator = () => {
   const [bedTime, setBedTime] = useState('23:00');
   const [results, setResults] = useState<Date[]>([]);
   const [cycleResults, setCycleResults] = useState<any[]>([]);
+  const [showResults, setShowResults] = useState(false);
+  const resultRef = useRef<HTMLDivElement>(null);
   
   // State for sleep quality assessment
   const [ageGroup, setAgeGroup] = useState('Adult (26-64 years)');
@@ -42,9 +46,15 @@ const SleepCalculator = () => {
   const [environment, setEnvironment] = useState(8);
   const [feeling, setFeeling] = useState(7);
   const [qualityResults, setQualityResults] = useState<any>(null);
+  const [showQualityResults, setShowQualityResults] = useState(false);
+  const qualityResultRef = useRef<HTMLDivElement>(null);
   
-  // Calculate results when inputs change
-  useEffect(() => {
+  const formatTimeResult = (time: Date) => {
+    return format(time, 'h:mm a');
+  };
+  
+  // Calculate sleep time results
+  const calculateSleepTimeResults = () => {
     if (calculatorMode === 'wake-up') {
       // Convert wake-up time string to Date
       const [hours, minutes] = wakeUpTime.split(':').map(Number);
@@ -81,10 +91,26 @@ const SleepCalculator = () => {
         setCycleResults(cycles);
       }
     }
-  }, [calculatorMode, wakeUpTime, bedTime]);
+    
+    setShowResults(true);
+    
+    // Scroll to result after a short delay to ensure rendering
+    setTimeout(() => {
+      if (resultRef.current) {
+        const yOffset = -80; // Offset to ensure the heading is visible
+        const element = resultRef.current;
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        
+        window.scrollTo({
+          top: y,
+          behavior: 'smooth'
+        });
+      }
+    }, 300);
+  };
   
-  // Calculate sleep quality when inputs change
-  useEffect(() => {
+  // Calculate sleep quality results
+  const calculateSleepQualityResults = () => {
     const quality = calculateSleepQuality({
       duration: sleepDuration,
       consistency,
@@ -95,10 +121,21 @@ const SleepCalculator = () => {
     });
     
     setQualityResults(quality);
-  }, [sleepDuration, consistency, wakeups, environment, feeling, ageGroup]);
-  
-  const formatTimeResult = (time: Date) => {
-    return format(time, 'h:mm a');
+    setShowQualityResults(true);
+    
+    // Scroll to result after a short delay to ensure rendering
+    setTimeout(() => {
+      if (qualityResultRef.current) {
+        const yOffset = -80; // Offset to ensure the heading is visible
+        const element = qualityResultRef.current;
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        
+        window.scrollTo({
+          top: y,
+          behavior: 'smooth'
+        });
+      }
+    }, 300);
   };
   
   // Get sleep recommendation based on age group
@@ -106,7 +143,14 @@ const SleepCalculator = () => {
   
   return (
     <Layout>
-      <div className="max-w-5xl mx-auto">
+      <SEO 
+        title={seoData.sleepCalculator.title}
+        description={seoData.sleepCalculator.description}
+        keywords={seoData.sleepCalculator.keywords}
+        structuredData={seoData.sleepCalculator.structuredData}
+        canonical="https://bodyindex.net/sleep-calculator"
+      />
+      <div className="max-w-5xl mx-auto px-4">
         <ToolHeroSection 
           title="Sleep Calculator"
           description="Optimize your sleep schedule, understand your sleep cycles, and improve your overall sleep quality."
@@ -314,40 +358,52 @@ const SleepCalculator = () => {
                       </div>
                     )}
                     
-                    {/* Results */}
-                    <div className="mt-8">
-                      <h3 className="text-lg font-semibold mb-4">
-                        {calculatorMode === 'wake-up' 
-                          ? `You should go to bed at one of these times:` 
-                          : `You should wake up at one of these times:`
-                        }
-                      </h3>
-                      
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        {results.map((time, index) => (
-                          <Card key={index} className={`p-4 text-center ${index === 1 ? 'border-primary border-2' : ''}`}>
-                            <div className="text-muted-foreground text-sm mb-1">
-                              {4 + index} sleep cycles ({(4 + index) * 90 / 60} hours)
-                            </div>
-                            <div className="text-2xl font-bold">
-                              {formatTimeResult(time)}
-                            </div>
-                            {index === 1 && (
-                              <div className="mt-2 text-xs text-primary font-medium">Recommended</div>
-                            )}
-                          </Card>
-                        ))}
-                      </div>
-                      
-                      <div className="mt-4 text-sm text-muted-foreground flex items-center gap-2">
-                        <AlertCircle className="h-4 w-4" />
-                        <span>It takes the average person 14 minutes to fall asleep. This has been factored into the calculations.</span>
-                      </div>
+                    {/* Calculate Button */}
+                    <div className="mt-8 mb-8 flex justify-center">
+                      <Button 
+                        onClick={calculateSleepTimeResults}
+                        className="px-8 py-6 text-lg"
+                      >
+                        Calculate Optimal Sleep Times
+                      </Button>
                     </div>
+                    
+                    {/* Results */}
+                    {showResults && (
+                      <div ref={resultRef} className="mt-8 scroll-mt-20">
+                        <h3 className="text-lg font-semibold mb-4">
+                          {calculatorMode === 'wake-up' 
+                            ? `You should go to bed at one of these times:` 
+                            : `You should wake up at one of these times:`
+                          }
+                        </h3>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                          {results.map((time, index) => (
+                            <Card key={index} className={`p-4 text-center ${index === 1 ? 'border-primary border-2' : ''}`}>
+                              <div className="text-muted-foreground text-sm mb-1">
+                                {4 + index} sleep cycles ({(4 + index) * 90 / 60} hours)
+                              </div>
+                              <div className="text-2xl font-bold">
+                                {formatTimeResult(time)}
+                              </div>
+                              {index === 1 && (
+                                <div className="mt-2 text-xs text-primary font-medium">Recommended</div>
+                              )}
+                            </Card>
+                          ))}
+                        </div>
+                        
+                        <div className="mt-4 text-sm text-muted-foreground flex items-center gap-2">
+                          <AlertCircle className="h-4 w-4" />
+                          <span>It takes the average person 14 minutes to fall asleep. This has been factored into the calculations.</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   
                   {/* Sleep Cycle Visualization */}
-                  {cycleResults.length > 0 && (
+                  {showResults && cycleResults.length > 0 && (
                     <div className="mt-6">
                       <h3 className="text-lg font-semibold mb-4">Your Sleep Cycle Visualization</h3>
                       <div className="w-full overflow-x-auto">
@@ -479,15 +535,25 @@ const SleepCalculator = () => {
                             How refreshed do you feel upon waking up?
                           </p>
                         </div>
+                        
+                        {/* Calculate Button */}
+                        <div className="flex justify-center mt-6">
+                          <Button 
+                            onClick={calculateSleepQualityResults}
+                            className="px-8 py-6 text-lg"
+                          >
+                            Analyze Sleep Quality
+                          </Button>
+                        </div>
                       </div>
                       
                       {/* Results */}
-                      <div className="bg-gray-50 p-6 rounded-xl">
+                      <div ref={qualityResultRef} className="bg-gray-50 p-6 rounded-xl scroll-mt-20">
                         <h3 className="text-lg font-semibold mb-4 text-center">
                           Your Sleep Quality Score
                         </h3>
                         
-                        {qualityResults && (
+                        {showQualityResults && qualityResults && (
                           <div className="flex flex-col items-center">
                             <SleepQualityGauge score={qualityResults.score} />
                             
@@ -564,6 +630,12 @@ const SleepCalculator = () => {
                                 </div>
                               </div>
                             </div>
+                          </div>
+                        )}
+                        
+                        {!showQualityResults && (
+                          <div className="text-center text-muted-foreground py-6">
+                            <p>Complete the assessment and click "Analyze Sleep Quality" to see your results.</p>
                           </div>
                         )}
                       </div>

@@ -9,20 +9,62 @@ export const calculateBodyFat = (
   age?: number,
   method: string = 'navy'
 ) => {
+  console.log('Debug - Calculating', method, 'with values:', { gender, waist, neck, height, hip, weight, age });
+  
   if (method === 'navy') {
+    // Validate inputs for Navy method
+    if (waist <= 0 || neck <= 0 || height <= 0) {
+      console.error('Navy method requires valid waist, neck, and height measurements');
+      return 0;
+    }
+    
+    if (gender === 'female' && (hip === undefined || hip <= 0)) {
+      console.error('Navy method for women requires valid hip measurement');
+      return 0;
+    }
+    
     if (gender === 'male') {
       // US Navy formula for men
-      return Math.max(0, 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450);
+      const logValue = Math.log10(waist - neck);
+      const logHeight = Math.log10(height);
+      
+      console.log('Debug - Navy male calculation:', { logValue, logHeight });
+      
+      if (isNaN(logValue) || isNaN(logHeight)) {
+        console.error('Invalid logarithm values in calculation');
+        return 0;
+      }
+      
+      return Math.max(0, 495 / (1.0324 - 0.19077 * logValue + 0.15456 * logHeight) - 450);
     } else {
       // US Navy formula for women (requires hip measurement)
-      if (hip === undefined) return 0;
-      return Math.max(0, 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.22100 * Math.log10(height)) - 450);
+      if (hip === undefined) {
+        console.error('Hip measurement is required for women');
+        return 0;
+      }
+      
+      const logValue = Math.log10(waist + hip - neck);
+      const logHeight = Math.log10(height);
+      
+      console.log('Debug - Navy female calculation:', { logValue, logHeight });
+      
+      if (isNaN(logValue) || isNaN(logHeight)) {
+        console.error('Invalid logarithm values in calculation');
+        return 0;
+      }
+      
+      return Math.max(0, 495 / (1.29579 - 0.35004 * logValue + 0.22100 * logHeight) - 450);
     }
   } else if (method === 'bmi') {
     // BMI-based body fat estimation (requires weight)
-    if (weight === undefined || age === undefined) return 0;
+    if (weight === undefined || age === undefined) {
+      console.error('BMI method requires valid weight and age');
+      return 0;
+    }
     
     const bmi = (weight / ((height / 100) * (height / 100)));
+    
+    console.log('Debug - BMI calculation:', { bmi });
     
     if (gender === 'male') {
       // For men: (1.20 × BMI) + (0.23 × Age) - 16.2
