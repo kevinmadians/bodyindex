@@ -400,7 +400,12 @@ const CalculatorForm = ({
               id="age"
               value={age.toString()}
               onValueChange={(value) => {
-                setAge(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].age);
+                if (value === null) {
+                  // Allow empty value
+                  setAge(0);
+                } else {
+                  setAge(value);
+                }
                 setErrors({...errors, age: undefined});
                 // Hide results when input changes
                 setShowResults(false);
@@ -426,7 +431,12 @@ const CalculatorForm = ({
               id="weight"
               value={weight.toString()}
               onValueChange={(value) => {
-                setWeight(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].weight);
+                if (value === null) {
+                  // Allow empty value
+                  setWeight(0);
+                } else {
+                  setWeight(value);
+                }
                 setErrors({...errors, weight: undefined});
               }}
               min={measurementUnit === 'metric' ? 30 : 66}
@@ -463,7 +473,12 @@ const CalculatorForm = ({
                 id="waist"
                 value={getSafeWaist()}
                 onValueChange={(value) => {
-                  setWaist(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].waist);
+                  if (value === null) {
+                    // Allow empty value
+                    setWaist(0);
+                  } else {
+                    setWaist(value);
+                  }
                   setErrors({...errors, waist: undefined});
                 }}
                 min={measurementUnit === 'metric' ? 50 : 20}
@@ -502,7 +517,12 @@ const CalculatorForm = ({
                   id="triceps"
                   value={triceps.toString()}
                   onValueChange={(value) => {
-                    setTriceps(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].triceps);
+                    if (value === null) {
+                      // Allow empty value
+                      setTriceps(0);
+                    } else {
+                      setTriceps(value);
+                    }
                     setErrors({...errors, triceps: undefined});
                   }}
                   min={measurementUnit === 'metric' ? 2 : 0.08}
@@ -538,7 +558,12 @@ const CalculatorForm = ({
                   id="subscapular"
                   value={subscapular.toString()}
                   onValueChange={(value) => {
-                    setSubscapular(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].subscapular);
+                    if (value === null) {
+                      // Allow empty value
+                      setSubscapular(0);
+                    } else {
+                      setSubscapular(value);
+                    }
                     setErrors({...errors, subscapular: undefined});
                   }}
                   min={measurementUnit === 'metric' ? 2 : 0.08}
@@ -582,7 +607,12 @@ const CalculatorForm = ({
               id="height"
               value={getSafeHeight()}
               onValueChange={(value) => {
-                setHeight(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].height);
+                if (value === null) {
+                  // Allow empty value
+                  setHeight(0);
+                } else {
+                  setHeight(value);
+                }
                 setErrors({...errors, height: undefined});
                 // Hide results when input changes
                 setShowResults(false);
@@ -621,7 +651,12 @@ const CalculatorForm = ({
                 id="neck"
                 value={getSafeNeck()}
                 onValueChange={(value) => {
-                  setNeck(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].neck);
+                  if (value === null) {
+                    // Allow empty value
+                    setNeck(0);
+                  } else {
+                    setNeck(value);
+                  }
                   setErrors({...errors, neck: undefined});
                 }}
                 min={measurementUnit === 'metric' ? 20 : 8}
@@ -659,7 +694,12 @@ const CalculatorForm = ({
                 id="hip"
                 value={hip.toString()}
                 onValueChange={(value) => {
-                  setHip(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].hip);
+                  if (value === null) {
+                    // Allow empty value
+                    setHip(0);
+                  } else {
+                    setHip(value);
+                  }
                   setErrors({...errors, hip: undefined});
                 }}
                 min={measurementUnit === 'metric' ? 50 : 20}
@@ -698,7 +738,12 @@ const CalculatorForm = ({
                   id="suprailiac"
                   value={suprailiac.toString()}
                   onValueChange={(value) => {
-                    setSuprailiac(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].suprailiac);
+                    if (value === null) {
+                      // Allow empty value
+                      setSuprailiac(0);
+                    } else {
+                      setSuprailiac(value);
+                    }
                     setErrors({...errors, suprailiac: undefined});
                   }}
                   min={measurementUnit === 'metric' ? 2 : 0.08}
@@ -735,7 +780,12 @@ const CalculatorForm = ({
                     id="thigh"
                     value={thigh.toString()}
                     onValueChange={(value) => {
-                      setThigh(value !== null ? value : SAFE_DEFAULTS[measurementUnit as 'metric' | 'imperial'].thigh);
+                      if (value === null) {
+                        // Allow empty value
+                        setThigh(0);
+                      } else {
+                        setThigh(value);
+                      }
                       setErrors({...errors, thigh: undefined});
                     }}
                     min={measurementUnit === 'metric' ? 2 : 0.08}

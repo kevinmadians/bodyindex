@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, CSSProperties } from 'react';
 
 interface AnimatedResultsProps {
   children: React.ReactNode;
@@ -17,17 +17,21 @@ const AnimatedResults: React.FC<AnimatedResultsProps> = ({
   disableAutoScroll = true // Default to disabling auto-scroll
 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
   
   // Control the visibility of the component based on the show prop
   useEffect(() => {
     if (show) {
-      // Small delay to ensure clean animation
+      // Small delay to ensure clean animation for initial reveal
       setTimeout(() => {
         setIsVisible(true);
+        if (!hasInitialized) {
+          setHasInitialized(true);
+        }
         
-        // Only auto-scroll if explicitly enabled
-        if (!disableAutoScroll && resultsRef.current) {
+        // Only auto-scroll if explicitly enabled on initial display
+        if (!disableAutoScroll && resultsRef.current && !hasInitialized) {
           setTimeout(() => {
             const yOffset = -80; // Offset to ensure the header is visible
             const element = resultsRef.current;
@@ -48,7 +52,7 @@ const AnimatedResults: React.FC<AnimatedResultsProps> = ({
     } else {
       setIsVisible(false);
     }
-  }, [show, onAnimationComplete, disableAutoScroll]);
+  }, [show, onAnimationComplete, disableAutoScroll, hasInitialized]);
 
   // Apply CSS classes conditionally for animation
   const animationClasses = `
@@ -56,18 +60,21 @@ const AnimatedResults: React.FC<AnimatedResultsProps> = ({
     ${isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-8'}
   `;
 
+  const containerStyles: CSSProperties = {
+    visibility: show ? 'visible' : 'hidden',
+    animationFillMode: 'forwards',
+    height: show ? 'auto' : '0px',
+    overflow: show ? 'visible' : 'hidden',
+    margin: show ? 'inherit' : '0',
+    padding: show ? 'inherit' : '0',
+    transition: 'all 0.3s ease-in-out'
+  };
+
   return (
     <div 
       ref={resultsRef} 
       className={`scroll-mt-20 ${animationClasses}`}
-      style={{ 
-        visibility: show ? 'visible' : 'hidden',
-        animationFillMode: 'forwards',
-        height: show ? 'auto' : '0px',
-        overflow: show ? 'visible' : 'hidden',
-        margin: show ? 'inherit' : '0',
-        padding: show ? 'inherit' : '0'
-      }}
+      style={containerStyles}
     >
       {children}
     </div>
@@ -120,6 +127,42 @@ const globalAnimationCSS = `
   }
 }
 
+@keyframes bounceUp {
+  0% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-10px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  70% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceDown {
+  0% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(10px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  70% {
+    transform: translateY(5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out forwards;
 }
@@ -134,6 +177,14 @@ const globalAnimationCSS = `
 
 .animate-slide-right {
   animation: slideRight 0.5s ease-out forwards;
+}
+
+.animate-bounce-up {
+  animation: bounceUp 1s ease-out forwards;
+}
+
+.animate-bounce-down {
+  animation: bounceDown 1s ease-out forwards;
 }
 
 /* Apply different animation delays to children */

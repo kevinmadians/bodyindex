@@ -176,8 +176,13 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
                 <NumericInput
                   id="height"
                   value={height === 0 ? '' : height.toString()}
-                  onValueChange={(value: number | undefined) => {
-                    setHeight(value || height);
+                  onValueChange={(value) => {
+                    if (value === null) {
+                      // Allow empty value
+                      setHeight(0);
+                    } else {
+                      setHeight(value);
+                    }
                     setErrors({ ...errors, height: undefined });
                   }}
                   min={150}
@@ -209,8 +214,13 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
                   <NumericInput
                     id="height-ft"
                     value={heightFt === 0 ? '' : heightFt.toString()}
-                    onValueChange={(value: number | undefined) => {
-                      setHeightFt(value || heightFt);
+                    onValueChange={(value) => {
+                      if (value === null) {
+                        // Allow empty value
+                        setHeightFt(0);
+                      } else {
+                        setHeightFt(value);
+                      }
                       setErrors({ ...errors, heightFt: undefined });
                     }}
                     min={3}
@@ -234,8 +244,13 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
                   <NumericInput
                     id="height-in"
                     value={heightIn === 0 ? '' : heightIn.toString()}
-                    onValueChange={(value: number | undefined) => {
-                      setHeightIn(value || heightIn);
+                    onValueChange={(value) => {
+                      if (value === null) {
+                        // Allow empty value
+                        setHeightIn(0);
+                      } else {
+                        setHeightIn(value);
+                      }
                       setErrors({ ...errors, heightIn: undefined });
                     }}
                     min={0}
@@ -260,8 +275,13 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
               <NumericInput
                 id="age"
                 value={age === 0 ? '' : age.toString()}
-                onValueChange={(value: number | undefined) => {
-                  setAge(value || age);
+                onValueChange={(value) => {
+                  if (value === null) {
+                    // Allow empty value
+                    setAge(0);
+                  } else {
+                    setAge(value);
+                  }
                   setErrors({ ...errors, age: undefined });
                 }}
                 min={18}
@@ -290,8 +310,13 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
               <NumericInput
                 id="wrist"
                 value={wristCircumference === 0 ? '' : wristCircumference.toString()}
-                onValueChange={(value: number | undefined) => {
-                  setWristCircumference(value || wristCircumference);
+                onValueChange={(value) => {
+                  if (value === null) {
+                    // Allow empty value
+                    setWristCircumference(0);
+                  } else {
+                    setWristCircumference(value);
+                  }
                   setErrors({ ...errors, wrist: undefined });
                 }}
                 min={gender === 'male' ? 15 : 14}

@@ -21,20 +21,24 @@ export function NumericInput({
   value: initialValue = '',
   min,
   max,
+  id,
   ...props
 }: NumericInputProps) {
   const [value, setValue] = useState<string>(initialValue);
   const [isTouched, setIsTouched] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+  
+  // Generate a unique ID if none is provided
+  const inputId = id || `numeric-input-${Math.random().toString(36).substring(2, 9)}`;
 
   // Update internal value when prop changes
   useEffect(() => {
     // Only update if the value coming in is different from what the user has typed
     // and the field is not currently focused
-    if (initialValue !== undefined && initialValue !== value && !document.activeElement?.contains(document.getElementById('numeric-input'))) {
+    if (initialValue !== undefined && initialValue !== value && !document.activeElement?.contains(document.getElementById(inputId))) {
       setValue(initialValue);
     }
-  }, [initialValue, value]);
+  }, [initialValue, value, inputId]);
 
   // Validate value against min/max constraints
   const validateValue = (val: string) => {
@@ -63,14 +67,24 @@ export function NumericInput({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     
-    // Allow empty string or valid numbers (including decimal points)
-    if (newValue === '' || /^-?\d*\.?\d*$/.test(newValue)) {
+    // Always allow empty string
+    if (newValue === '') {
+      setValue(newValue);
+      onValueChange?.(null);
+      
+      if (isTouched) {
+        setValidationError(validateValue(newValue));
+      }
+      return;
+    }
+    
+    // For non-empty values, validate numeric format including decimal points
+    if (/^-?\d*\.?\d*$/.test(newValue)) {
       setValue(newValue);
       
       // Convert to number or null for the parent component
-      // Empty string or invalid numbers should be null
       let numericValue = null;
-      if (newValue !== '' && !isNaN(parseFloat(newValue))) {
+      if (!isNaN(parseFloat(newValue))) {
         numericValue = parseFloat(newValue);
       }
       
@@ -102,13 +116,13 @@ export function NumericInput({
   return (
     <div className="space-y-1">
       {label && (
-        <label className="text-sm font-medium text-gray-700">
+        <label className="text-sm font-medium text-gray-700" htmlFor={inputId}>
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
       <Input
-        id="numeric-input"
+        id={inputId}
         type="text"
         inputMode="decimal"
         value={value}
