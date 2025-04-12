@@ -17,7 +17,7 @@ const SEO: React.FC<SEOProps> = ({
   description,
   keywords,
   canonical = 'https://bodyindex.net',
-  ogImage = 'https://bodyindex.net/og-image.png',
+  ogImage = 'https://bodyindex.net/og-image.jpg',
   structuredData,
   articlePublishedTime,
   articleModifiedTime
