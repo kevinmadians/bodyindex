@@ -92,6 +92,7 @@ If needed, you can further use the `web_scraper.py` file to scrape the web page 
 
 - You have a python venv in ./venv. Always use (activate) it when doing python development. First, to check whether 'uv' is available, use `which uv`. If that's the case, first activate the venv, and then use `uv pip install` to install packages. Otherwise, fall back to `pip`.
 - Due to Cursor's limit, when you use `git` and `gh` and need to submit a multiline commit message, first write the message in a file, and then use `git commit -F <filename>` or similar command to commit. And then remove the file. Include "[Cursor] " in the commit message and PR title.
+- When setting up favicons for web applications with Vercel deployment, ensure that all favicon files are properly included in the public directory AND that they are explicitly listed in index.html with the correct paths. For Windows environments, use the -Force flag with dir command to see hidden files in PowerShell. Vercel requires explicit favicon declarations in both vercel.json routes and proper link tags in the HTML head.
 
 ## Cursor learned
 
@@ -138,6 +139,18 @@ If needed, you can further use the `web_scraper.py` file to scrape the web page 
   - Removed redundant "BMI Categories Chart" heading to prevent duplication
   - Maintained proper heading hierarchy for accessibility
 
+[X] Fixed Favicon for Vercel Deployment
+  - Identified issue: Some favicon files were hidden in Windows File Explorer
+  - Verified all required favicon files exist in the public directory using dir -Force
+  - Confirmed proper favicon declarations in index.html with multiple formats:
+    - favicon.ico for traditional browser support
+    - favicon.svg for modern browsers with vector support
+    - favicon.png as a fallback for older browsers
+    - favicon-16x16.png and favicon-32x32.png for specific sizes
+    - apple-touch-icon.png for iOS devices
+  - Verified proper routes in vercel.json to ensure favicon files are correctly served
+  - Learned: Windows may hide some files by default, use -Force flag to see all files
+
 ### Key Technical Learnings:
 
 1. **Input Field State Management**: 
@@ -159,6 +172,12 @@ If needed, you can further use the `web_scraper.py` file to scrape the web page 
    - Avoid unnecessary re-renders by using stable keys
    - Use proper state management to prevent cascading updates
    - Implement conditional rendering efficiently
+
+5. **Deployment & Infrastructure**:
+   - Vercel requires explicit routes for static assets in vercel.json
+   - Check for hidden files using appropriate OS commands (dir -Force on Windows)
+   - Include multiple favicon formats for cross-browser compatibility
+   - Ensure proper caching headers for static assets
 
 ### Next Steps / Future Improvements:
 
